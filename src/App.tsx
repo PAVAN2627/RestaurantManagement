@@ -27,6 +27,10 @@ import AdminReservations from "./pages/admin/AdminReservations";
 import AdminMenu from "./pages/admin/AdminMenu";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import UserLayout from "./pages/user/UserLayout";
+import UserProfile from "./pages/user/UserProfile";
+import UserOrders from "./pages/user/UserOrders";
+import UserReservations from "./pages/user/UserReservations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,9 +55,17 @@ const App = () => (
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/gallery" element={<GalleryPage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
+              
+              {/* User Dashboard */}
+              <Route path="/profile" element={<UserLayout />}>
+                <Route index element={<UserProfile />} />
+                <Route path="orders" element={<UserOrders />} />
+                <Route path="reservations" element={<UserReservations />} />
+              </Route>
+
+              {/* Admin Dashboard */}
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminOverview />} />
                 <Route path="orders" element={<AdminOrders />} />
@@ -62,6 +74,7 @@ const App = () => (
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="analytics" element={<AdminAnalytics />} />
               </Route>
+
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />

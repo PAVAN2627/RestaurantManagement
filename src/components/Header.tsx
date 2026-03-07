@@ -1,8 +1,16 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, Menu, X, User } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ShoppingCart, Menu, X, User, LogOut } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -15,12 +23,18 @@ const navLinks = [
 
 const Header = () => {
   const { totalItems, setIsCartOpen } = useCart();
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn, user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Hide header on admin pages
   if (location.pathname.startsWith("/admin")) return null;
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -58,9 +72,31 @@ const Header = () => {
           </button>
 
           {isLoggedIn ? (
-            <Link to={user?.role === "admin" ? "/admin" : "/profile"} className="p-2 rounded-full hover:bg-muted transition-colors">
-              <img src={user?.avatar} alt={user?.name} className="w-7 h-7 rounded-full" />
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="p-2 rounded-full hover:bg-muted transition-colors focus:outline-none">
+                <img src={user?.avatar} alt={user?.name} className="w-7 h-7 rounded-full" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col">
+                    <span className="font-body font-semibold">{user?.name}</span>
+                    <span className="font-body text-xs text-muted-foreground">{user?.email}</span>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to={user?.role === "admin" ? "/admin" : "/profile"} className="cursor-pointer">
+                    <User className="w-4 h-4 mr-2" />
+                    {user?.role === "admin" ? "Admin Panel" : "Dashboard"}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Link to="/login" className="p-2 rounded-full hover:bg-muted transition-colors" aria-label="Login">
               <User className="w-5 h-5 text-foreground" />
@@ -92,13 +128,31 @@ const Header = () => {
                 {link.label}
               </Link>
             ))}
-            <Link
-              to={isLoggedIn ? "/profile" : "/login"}
-              onClick={() => setMobileOpen(false)}
-              className="font-body text-sm font-medium py-2 text-muted-foreground hover:text-primary transition-colors"
-            >
-              {isLoggedIn ? "Profile" : "Login"}
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link
+                  to={user?.role === "admin" ? "/admin" : "/profile"}
+                  onClick={() => setMobileOpen(false)}
+                  className="font-body text-sm font-medium py-2 text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {user?.role === "admin" ? "Admin Panel" : "Dashboard"}
+                </Link>
+                <button
+                  onClick={() => { handleLogout(); setMobileOpen(false); }}
+                  className="font-body text-sm font-medium py-2 text-destructive hover:text-destructive/80 transition-colors text-left"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setMobileOpen(false)}
+                className="font-body text-sm font-medium py-2 text-muted-foreground hover:text-primary transition-colors"
+              >
+                Login
+              </Link>
+            )}
           </nav>
         </div>
       )}

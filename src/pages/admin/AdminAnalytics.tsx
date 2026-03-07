@@ -1,15 +1,15 @@
 import { mockOrders, menuItems } from "@/data/menuData";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
-// Revenue by day
+// Revenue by day (in ₹)
 const revenueData = [
-  { day: "Mon", revenue: 2400 },
-  { day: "Tue", revenue: 3100 },
-  { day: "Wed", revenue: 2800 },
-  { day: "Thu", revenue: 3500 },
-  { day: "Fri", revenue: 4200 },
-  { day: "Sat", revenue: 5100 },
-  { day: "Sun", revenue: 4700 },
+  { day: "Mon", revenue: 12400 },
+  { day: "Tue", revenue: 15100 },
+  { day: "Wed", revenue: 13800 },
+  { day: "Thu", revenue: 17500 },
+  { day: "Fri", revenue: 21200 },
+  { day: "Sat", revenue: 25100 },
+  { day: "Sun", revenue: 23700 },
 ];
 
 // Top dishes
@@ -32,15 +32,15 @@ const AdminAnalytics = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       {/* Revenue Chart */}
       <div className="bg-card border border-border rounded-xl p-5">
-        <h2 className="font-display text-lg font-semibold mb-4">Weekly Revenue</h2>
+        <h2 className="font-display text-lg font-semibold mb-4">Weekly Revenue (₹)</h2>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={revenueData}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(35, 15%, 85%)" />
             <XAxis dataKey="day" className="font-body text-xs" />
-            <YAxis className="font-body text-xs" />
+            <YAxis className="font-body text-xs" tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`} />
             <Tooltip
               contentStyle={{ backgroundColor: "hsl(40, 33%, 97%)", border: "1px solid hsl(35, 15%, 85%)", borderRadius: "8px", fontFamily: "DM Sans" }}
-              formatter={(value: number) => [`₹${value}`, "Revenue"]}
+              formatter={(value: number) => [`₹${value.toLocaleString('en-IN')}`, "Revenue"]}
             />
             <Bar dataKey="revenue" fill="hsl(36, 80%, 50%)" radius={[6, 6, 0, 0]} />
           </BarChart>

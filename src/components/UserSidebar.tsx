@@ -1,6 +1,6 @@
-import { LayoutDashboard, Package, CalendarDays, UtensilsCrossed, Users, BarChart3, LogOut, Home } from "lucide-react";
+import { User, Package, CalendarDays, LogOut, Home } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import {
   Sidebar,
@@ -16,18 +16,14 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
-  { title: "Overview", url: "/admin", icon: LayoutDashboard },
-  { title: "Orders", url: "/admin/orders", icon: Package },
-  { title: "Reservations", url: "/admin/reservations", icon: CalendarDays },
-  { title: "Menu", url: "/admin/menu", icon: UtensilsCrossed },
-  { title: "Users", url: "/admin/users", icon: Users },
-  { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
+  { title: "Profile", url: "/profile", icon: User },
+  { title: "My Orders", url: "/profile/orders", icon: Package },
+  { title: "My Reservations", url: "/profile/reservations", icon: CalendarDays },
 ];
 
-export function AdminSidebar() {
+export function UserSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
   const { logout, user } = useAuth();
   const navigate = useNavigate();
 
@@ -41,12 +37,12 @@ export function AdminSidebar() {
       <SidebarContent className="pt-4">
         {!collapsed && (
           <div className="px-4 mb-4">
-            <h2 className="font-display text-lg font-bold">Admin Panel</h2>
+            <h2 className="font-display text-lg font-bold">My Account</h2>
             <p className="font-body text-xs text-muted-foreground mt-1">{user?.name}</p>
           </div>
         )}
         <SidebarGroup>
-          <SidebarGroupLabel>Management</SidebarGroupLabel>
+          <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -54,7 +50,7 @@ export function AdminSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink
                       to={item.url}
-                      end={item.url === "/admin"}
+                      end={item.url === "/profile"}
                       className="hover:bg-muted/50"
                       activeClassName="bg-primary/10 text-primary font-medium"
                     >
@@ -75,7 +71,7 @@ export function AdminSidebar() {
             <SidebarMenuButton asChild>
               <NavLink to="/" className="hover:bg-muted/50">
                 <Home className="mr-2 h-4 w-4" />
-                {!collapsed && <span>Back to Site</span>}
+                {!collapsed && <span>Back to Home</span>}
               </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>

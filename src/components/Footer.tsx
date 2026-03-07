@@ -3,7 +3,11 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
 const Footer = () => {
   const location = useLocation();
-  if (location.pathname.startsWith("/admin")) return null;
+  
+  // Hide footer on admin and user dashboard pages
+  if (location.pathname.startsWith("/admin") || location.pathname.startsWith("/profile")) {
+    return null;
+  }
 
   return (
     <footer className="bg-secondary text-secondary-foreground pt-16 pb-8">
