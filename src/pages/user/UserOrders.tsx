@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { mockOrders, type Order } from "@/data/menuData";
+import { useOrders } from "@/context/OrderContext";
 import { X, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -14,6 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import type { Order } from "@/context/OrderContext";
 
 const statusColor: Record<string, string> = {
   pending: "bg-primary/20 text-primary",
@@ -25,20 +26,40 @@ const statusColor: Record<string, string> = {
 
 const UserOrders = () => {
   const { user } = useAuth();
-  const [orders, setOrders] = useState<Order[]>(mockOrders.filter((o) => o.userId === user?.id));
+  const { getUserOrders, updateOrderStatus } = useOrders();
+  const [orders, setOrders] = useState<Order[]>([]);
   const [cancelOrderId, setCancelOrderId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      setOrders(getUserOrders(user.id));
+    }
+
+    // Listen for storage changes (when admin updates status)
+    const handleStorageChange = () => {
+      if (user) {
+        setOrders(getUserOrders(user.id));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom event for same-tab updates
+    window.addEventListener('ordersUpdated', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('ordersUpdated', handleStorageChange);
+    };
+  }, [user, getUserOrders]);
 
   const canCancelOrder = (order: Order) => {
     return order.status === "pending" || order.status === "preparing";
   };
 
   const handleCancelOrder = (orderId: string) => {
-    // TODO: Send cancel request to backend
-    // await fetch(`/api/orders/${orderId}/cancel`, { method: 'PUT' });
-    
-    setOrders((prev) =>
-      prev.map((o) => (o.id === orderId ? { ...o, status: "cancelled" as const } : o))
-    );
+    updateOrderStatus(orderId, "cancelled");
+    setOrders(getUserOrders(user!.id));
     toast.success("Order cancelled successfully");
     setCancelOrderId(null);
   };
@@ -101,10 +122,21 @@ const UserOrders = () => {
             {/* Delivery Details */}
             <div className="border-t border-border pt-4 mb-4">
               <h4 className="font-body text-sm font-semibold mb-2">Delivery Details:</h4>
-              <p className="font-body text-sm text-muted-foreground">{order.customerName}</p>
-              <p className="font-body text-sm text-muted-foreground">{order.phone}</p>
-              <p className="font-body text-sm text-muted-foreground">{order.address}</p>
+              <p className="font-body text-sm text-muted-foreground">{order.contact.name}</p>
+              <p className="font-body text-sm text-muted-foreground">{order.contact.phone}</p>
+              <p className="font-body text-sm text-muted-foreground">{order.contact.address}</p>
             </div>
+
+            {/* Cancellation Reason */}
+            {order.cancellationReason && (
+              <div className="border-t border-border pt-4 mb-4">
+                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                  <p className="font-body text-sm text-destructive">
+                    <strong>Cancellation Reason:</strong> {order.cancellationReason}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Actions */}
             {canCancelOrder(order) && (

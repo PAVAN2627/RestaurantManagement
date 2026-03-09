@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { mockReservations, type Reservation } from "@/data/menuData";
+import { useOrders } from "@/context/OrderContext";
 import { X, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -14,6 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import type { Reservation } from "@/context/OrderContext";
 
 const statusColor: Record<string, string> = {
   confirmed: "bg-primary/20 text-primary",
@@ -23,22 +24,40 @@ const statusColor: Record<string, string> = {
 
 const UserReservations = () => {
   const { user } = useAuth();
-  const [reservations, setReservations] = useState<Reservation[]>(
-    mockReservations.filter((r) => r.userId === user?.id)
-  );
+  const { getUserReservations, updateReservationStatus } = useOrders();
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [cancelReservationId, setCancelReservationId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      setReservations(getUserReservations(user.id));
+    }
+
+    // Listen for storage changes (when admin updates status)
+    const handleStorageChange = () => {
+      if (user) {
+        setReservations(getUserReservations(user.id));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom event for same-tab updates
+    window.addEventListener('reservationsUpdated', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('reservationsUpdated', handleStorageChange);
+    };
+  }, [user, getUserReservations]);
 
   const canCancelReservation = (reservation: Reservation) => {
     return reservation.status === "confirmed";
   };
 
   const handleCancelReservation = (reservationId: string) => {
-    // TODO: Send cancel request to backend
-    // await fetch(`/api/reservations/${reservationId}/cancel`, { method: 'PUT' });
-    
-    setReservations((prev) =>
-      prev.map((r) => (r.id === reservationId ? { ...r, status: "cancelled" as const } : r))
-    );
+    updateReservationStatus(reservationId, "cancelled");
+    setReservations(getUserReservations(user!.id));
     toast.success("Reservation cancelled successfully");
     setCancelReservationId(null);
   };

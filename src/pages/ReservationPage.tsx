@@ -3,10 +3,12 @@ import { CalendarDays, Clock, Users, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
+import { useOrders } from "@/context/OrderContext";
 import { useNavigate } from "react-router-dom";
 
 const ReservationPage = () => {
   const { user, isLoggedIn } = useAuth();
+  const { addReservation } = useOrders();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", phone: "", guests: "2", date: "", time: "", notes: "" });
 
@@ -28,14 +30,19 @@ const ReservationPage = () => {
       return;
     }
     
-    // TODO: Send reservation to backend
-    // await fetch('/api/reservations', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ ...form, userId: user.id })
-    // });
+    // Save reservation to localStorage
+    const newReservation = addReservation({
+      userId: user!.id,
+      name: form.name,
+      phone: form.phone,
+      guests: parseInt(form.guests),
+      date: form.date,
+      time: form.time,
+      notes: form.notes,
+      status: "confirmed",
+    });
     
-    toast.success("Reservation confirmed! We'll see you soon.");
+    toast.success(`Reservation confirmed! Booking ID: ${newReservation.id}`);
     setTimeout(() => {
       navigate("/profile/reservations");
     }, 1500);

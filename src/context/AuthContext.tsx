@@ -34,7 +34,7 @@ const mockUser: MockUser = {
   id: "u1",
   name: "Rahul Sharma",
   email: "rahul.sharma@gmail.com",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul",
+  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul&backgroundColor=b6e3f4&radius=50",
   role: "user",
   phone: "+91 98765 43210",
   addresses: [
@@ -57,7 +57,7 @@ const mockAdmin: MockUser = {
   id: "a1",
   name: "Admin Chef",
   email: "admin@spicegarden.in",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
+  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=ffd5dc&radius=50",
   role: "admin",
   phone: "+91 99999 00000",
   addresses: [],

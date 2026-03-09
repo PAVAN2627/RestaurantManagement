@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, CalendarDays, UtensilsCrossed, Users, BarChart3, LogOut, Home } from "lucide-react";
+import { LayoutDashboard, Package, CalendarDays, UtensilsCrossed, Users, BarChart3, LogOut, Home, X } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
+  SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -25,7 +26,7 @@ const items = [
 ];
 
 export function AdminSidebar() {
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
   const { logout, user } = useAuth();
@@ -34,12 +35,33 @@ export function AdminSidebar() {
   const handleLogout = () => {
     logout();
     navigate("/");
+    if (isMobile) setOpenMobile(false);
+  };
+
+  const handleNavClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
   };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
+      <SidebarHeader>
+        {isMobile && (
+          <div className="flex items-center justify-between p-4 border-b border-border">
+            <h2 className="font-display text-lg font-bold">Admin Panel</h2>
+            <button
+              onClick={() => setOpenMobile(false)}
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
+              aria-label="Close sidebar"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+      </SidebarHeader>
       <SidebarContent className="pt-4">
-        {!collapsed && (
+        {!collapsed && !isMobile && (
           <div className="px-4 mb-4">
             <h2 className="font-display text-lg font-bold">Admin Panel</h2>
             <p className="font-body text-xs text-muted-foreground mt-1">{user?.name}</p>
@@ -57,6 +79,7 @@ export function AdminSidebar() {
                       end={item.url === "/admin"}
                       className="hover:bg-muted/50"
                       activeClassName="bg-primary/10 text-primary font-medium"
+                      onClick={handleNavClick}
                     >
                       <item.icon className="mr-2 h-4 w-4" />
                       {!collapsed && <span>{item.title}</span>}
@@ -73,7 +96,7 @@ export function AdminSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <NavLink to="/" className="hover:bg-muted/50">
+              <NavLink to="/" className="hover:bg-muted/50" onClick={handleNavClick}>
                 <Home className="mr-2 h-4 w-4" />
                 {!collapsed && <span>Back to Site</span>}
               </NavLink>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useOrders } from "@/context/OrderContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ const loadRazorpayScript = () => {
 const CheckoutPage = () => {
   const { items, totalPrice, clearCart } = useCart();
   const { user, isLoggedIn } = useAuth();
+  const { addOrder } = useOrders();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", phone: "", address: "", payment: "cod", selectedAddressId: "" });
   const [loading, setLoading] = useState(false);
@@ -85,20 +87,30 @@ const CheckoutPage = () => {
       description: "Order Payment",
       order_id: orderData.id,
       handler: function (response: any) {
-        // TODO: Verify payment on backend
-        // fetch('/api/orders/verify-payment', {
-        //   method: 'POST',
-        //   body: JSON.stringify({
-        //     razorpay_order_id: response.razorpay_order_id,
-        //     razorpay_payment_id: response.razorpay_payment_id,
-        //     razorpay_signature: response.razorpay_signature
-        //   })
-        // });
+        // Save order to localStorage
+        const newOrder = addOrder({
+          userId: user!.id,
+          items: items.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            qty: item.qty,
+            image: item.image,
+          })),
+          totalPrice,
+          contact: {
+            name: form.name,
+            phone: form.phone,
+            address: form.address,
+          },
+          payment: "Razorpay",
+          status: "pending",
+        });
 
         console.log("Payment successful:", response);
-        toast.success("Payment successful! 🎉");
+        toast.success(`Payment successful! Order ID: ${newOrder.id}`);
         clearCart();
-        navigate("/profile");
+        navigate("/profile/orders");
       },
       prefill: {
         name: form.name || user?.name || "",
@@ -134,17 +146,30 @@ const CheckoutPage = () => {
       // COD order
       setLoading(true);
       
-      // TODO: Send order to backend
-      // await fetch('/api/orders', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ items, totalPrice, contact: form, payment: 'COD' })
-      // });
+      // Save order to localStorage
+      const newOrder = addOrder({
+        userId: user!.id,
+        items: items.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          qty: item.qty,
+          image: item.image,
+        })),
+        totalPrice,
+        contact: {
+          name: form.name,
+          phone: form.phone,
+          address: form.address,
+        },
+        payment: "COD",
+        status: "pending",
+      });
 
       setTimeout(() => {
-        toast.success("Order placed successfully! 🎉");
+        toast.success(`Order placed successfully! Order ID: ${newOrder.id}`);
         clearCart();
-        navigate("/profile");
+        navigate("/profile/orders");
         setLoading(false);
       }, 1000);
     }

@@ -165,7 +165,7 @@ const AboutPage = () => {
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl" />
                 <img 
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Chef" 
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Chef&backgroundColor=c0aede&radius=50" 
                   alt="Head Chef" 
                   className="w-20 h-20 rounded-full border-4 border-primary shadow-xl relative hover-scale"
                 />

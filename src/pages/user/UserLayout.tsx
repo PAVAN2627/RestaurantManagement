@@ -19,20 +19,22 @@ const UserLayout = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-background">
-        <UserSidebar />
-        <main className="flex-1 overflow-y-auto">
-          <div className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
-            <SidebarTrigger />
-            <h1 className="font-display text-lg font-semibold">Dashboard</h1>
+    <div className="pt-16 md:pt-20 min-h-screen bg-background">
+      <SidebarProvider>
+        <div className="min-h-[calc(100vh-5rem)] flex w-full">
+          <UserSidebar />
+          <div className="flex-1 flex flex-col min-w-0">
+            <div className="h-12 flex items-center gap-3 border-b border-border px-4">
+              <SidebarTrigger />
+              <h1 className="font-display text-lg font-semibold">Dashboard</h1>
+            </div>
+            <main className="flex-1 p-4 md:p-6 overflow-auto">
+              <Outlet />
+            </main>
           </div>
-          <div className="p-6">
-            <Outlet />
-          </div>
-        </main>
-      </div>
-    </SidebarProvider>
+        </div>
+      </SidebarProvider>
+    </div>
   );
 };
 

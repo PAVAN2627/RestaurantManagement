@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { mockReservations, type Reservation } from "@/data/menuData";
+import { useState, useEffect } from "react";
+import { useOrders } from "@/context/OrderContext";
+import type { Reservation } from "@/context/OrderContext";
 
 const statusColor: Record<string, string> = {
   confirmed: "bg-primary/20 text-primary",
@@ -8,10 +9,16 @@ const statusColor: Record<string, string> = {
 };
 
 const AdminReservations = () => {
-  const [reservations, setReservations] = useState<Reservation[]>(mockReservations);
+  const { reservations: allReservations, updateReservationStatus } = useOrders();
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+
+  useEffect(() => {
+    setReservations(allReservations);
+  }, [allReservations]);
 
   const updateStatus = (id: string, status: Reservation["status"]) => {
-    setReservations((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
+    updateReservationStatus(id, status);
+    setReservations(allReservations);
   };
 
   return (
