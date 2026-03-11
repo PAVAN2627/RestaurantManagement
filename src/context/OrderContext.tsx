@@ -31,12 +31,8 @@ export interface Reservation {
   date: string;
   time: string;
   notes: string;
-<<<<<<< HEAD
-  status: "confirmed" | "cancelled" | "completed";
-  assignedTable?: number;
-=======
   status: "pending" | "confirmed" | "cancelled" | "completed";
->>>>>>> 5b310c277d1ca2af0107685d2cbb4080e9235d16
+  assignedTable?: number;
   createdAt: string;
 }
 
