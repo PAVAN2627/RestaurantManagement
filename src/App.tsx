@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { OrderProvider } from "@/context/OrderContext";
+import { TableOrderProvider } from "@/context/TableOrderContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
@@ -29,10 +30,12 @@ import AdminReservations from "./pages/admin/AdminReservations";
 import AdminMenu from "./pages/admin/AdminMenu";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminTableOrders from "./pages/admin/AdminTableOrders";
 import UserLayout from "./pages/user/UserLayout";
 import UserProfile from "./pages/user/UserProfile";
 import UserOrders from "./pages/user/UserOrders";
 import UserReservations from "./pages/user/UserReservations";
+import UserTableOrder from "./pages/user/UserTableOrder";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +45,7 @@ const App = () => (
     <TooltipProvider>
       <AuthProvider>
         <OrderProvider>
+          <TableOrderProvider>
           <CartProvider>
             <Toaster />
             <Sonner />
@@ -66,6 +70,7 @@ const App = () => (
               <Route path="/profile" element={<UserLayout />}>
                 <Route index element={<UserProfile />} />
                 <Route path="orders" element={<UserOrders />} />
+                <Route path="table-order" element={<UserTableOrder />} />
                 <Route path="reservations" element={<UserReservations />} />
               </Route>
 
@@ -73,6 +78,7 @@ const App = () => (
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminOverview />} />
                 <Route path="orders" element={<AdminOrders />} />
+                <Route path="table-orders" element={<AdminTableOrders />} />
                 <Route path="reservations" element={<AdminReservations />} />
                 <Route path="menu" element={<AdminMenu />} />
                 <Route path="users" element={<AdminUsers />} />
@@ -84,6 +90,7 @@ const App = () => (
             <Footer />
           </BrowserRouter>
         </CartProvider>
+          </TableOrderProvider>
         </OrderProvider>
       </AuthProvider>
     </TooltipProvider>

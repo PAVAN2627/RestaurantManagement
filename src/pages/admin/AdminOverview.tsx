@@ -1,4 +1,4 @@
-import { Package, CalendarDays, Users, TrendingUp, DollarSign, UtensilsCrossed } from "lucide-react";
+import { Package, CalendarDays, Users, TrendingUp, IndianRupee, UtensilsCrossed } from "lucide-react";
 import { useOrders } from "@/context/OrderContext";
 import { mockUsers, menuItems } from "@/data/menuData";
 
@@ -7,7 +7,7 @@ const AdminOverview = () => {
   
   const stats = [
     { label: "Total Orders", value: orders.length, icon: Package, color: "text-primary" },
-    { label: "Revenue", value: `₹${orders.reduce((s, o) => s + o.totalPrice, 0).toLocaleString('en-IN')}`, icon: DollarSign, color: "text-green-600" },
+    { label: "Revenue", value: `₹${orders.reduce((s, o) => s + o.totalPrice, 0).toLocaleString('en-IN')}`, icon: IndianRupee, color: "text-green-600" },
     { label: "Reservations", value: reservations.filter((r) => r.status === "confirmed").length, icon: CalendarDays, color: "text-blue-600" },
     { label: "Active Users", value: mockUsers.filter((u) => u.role === "user").length, icon: Users, color: "text-orange-600" },
     { label: "Menu Items", value: menuItems.length, icon: UtensilsCrossed, color: "text-purple-600" },

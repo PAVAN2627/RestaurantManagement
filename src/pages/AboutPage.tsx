@@ -70,20 +70,37 @@ const AboutPage = () => {
   ];
 
   return (
-    <main className="pt-24 pb-20 min-h-screen bg-background overflow-hidden">
-      <div className="container max-w-6xl">
-        {/* Hero Section */}
-        <div className="text-center mb-16 relative">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10 animate-pulse" />
-          <p className="font-body text-primary font-semibold text-sm tracking-widest uppercase mb-3 animate-fade-in-down">Our Story</p>
-          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in-up gradient-text">
-            About Spice Garden
+    <main className="min-h-screen bg-background overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-br from-secondary via-secondary/95 to-secondary/80">
+        <div className="absolute top-10 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float pointer-events-none" />
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-primary/15 rounded-full blur-3xl animate-float-delayed pointer-events-none" />
+        <div className="absolute top-1/2 left-1/4 w-40 h-40 bg-primary/5 rounded-full blur-2xl animate-pulse-soft pointer-events-none" />
+        <div className="absolute top-20 right-[20%] w-20 h-20 border-2 border-primary/20 rounded-full animate-float-slow pointer-events-none" />
+        <div className="absolute bottom-32 left-[15%] w-10 h-10 border border-primary/15 rounded-full animate-pulse-soft pointer-events-none" />
+        <div className="absolute inset-0 hero-pattern pointer-events-none" />
+        
+        <div className="container relative z-10 text-center max-w-4xl">
+          <div className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full px-5 py-2 mb-6 animate-fade-in-down">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="font-body text-primary font-semibold text-xs tracking-widest uppercase">Our Story</span>
+          </div>
+          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-secondary-foreground mb-6 animate-fade-in-up">
+            About <span className="gradient-text">Spice Garden</span>
           </h1>
-          <p className="font-body text-muted-foreground text-lg md:text-xl leading-relaxed max-w-3xl mx-auto animate-fade-in-up stagger-1">
+          <p className="font-body text-secondary-foreground/70 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto animate-fade-in-up stagger-1">
             Founded in 2020, Spice Garden is a celebration of culinary art — blending time-honored Indian traditions with modern innovation. Every dish is crafted from locally sourced, seasonal ingredients by our team of passionate chefs.
           </p>
         </div>
 
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+            <path d="M0 60L60 52C120 44 240 28 360 24C480 20 600 28 720 32C840 36 960 36 1080 32C1200 28 1320 20 1380 16L1440 12V60H1380C1320 60 1200 60 1080 60C960 60 840 60 720 60C600 60 480 60 360 60C240 60 120 60 60 60H0Z" fill="hsl(var(--background))" />
+          </svg>
+        </div>
+      </section>
+
+      <div className="container max-w-6xl py-16">
         {/* Journey Section with Image */}
         <div className="grid md:grid-cols-2 gap-8 mb-16 items-center">
           <div className="relative animate-slide-in-left">

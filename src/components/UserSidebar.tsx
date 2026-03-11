@@ -1,4 +1,4 @@
-import { User, Package, CalendarDays, LogOut, Home, X } from "lucide-react";
+import { User, Package, CalendarDays, LogOut, Home, X, UtensilsCrossed } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -19,6 +19,7 @@ import {
 const items = [
   { title: "Profile", url: "/profile", icon: User },
   { title: "My Orders", url: "/profile/orders", icon: Package },
+  { title: "Table Order", url: "/profile/table-order", icon: UtensilsCrossed },
   { title: "My Reservations", url: "/profile/reservations", icon: CalendarDays },
 ];
 

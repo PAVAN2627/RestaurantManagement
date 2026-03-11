@@ -32,6 +32,7 @@ export interface Reservation {
   time: string;
   notes: string;
   status: "confirmed" | "cancelled" | "completed";
+  assignedTable?: number;
   createdAt: string;
 }
 
@@ -42,6 +43,7 @@ interface OrderContextType {
   addReservation: (reservation: Omit<Reservation, "id" | "createdAt">) => Reservation;
   updateOrderStatus: (orderId: string, status: Order["status"], cancellationReason?: string) => void;
   updateReservationStatus: (reservationId: string, status: Reservation["status"]) => void;
+  assignTableToReservation: (reservationId: string, tableNumber: number) => void;
   getUserOrders: (userId: string) => Order[];
   getUserReservations: (userId: string) => Reservation[];
 }
@@ -117,7 +119,15 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         reservation.id === reservationId ? { ...reservation, status } : reservation
       )
     );
-    // Dispatch custom event for same-tab updates
+    window.dispatchEvent(new Event('reservationsUpdated'));
+  }, []);
+
+  const assignTableToReservation = useCallback((reservationId: string, tableNumber: number) => {
+    setReservations((prev) =>
+      prev.map((reservation) =>
+        reservation.id === reservationId ? { ...reservation, assignedTable: tableNumber } : reservation
+      )
+    );
     window.dispatchEvent(new Event('reservationsUpdated'));
   }, []);
 
@@ -144,6 +154,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         addReservation,
         updateOrderStatus,
         updateReservationStatus,
+        assignTableToReservation,
         getUserOrders,
         getUserReservations,
       }}

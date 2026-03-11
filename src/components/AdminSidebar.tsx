@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, CalendarDays, UtensilsCrossed, Users, BarChart3, LogOut, Home, X } from "lucide-react";
+import { LayoutDashboard, Package, CalendarDays, UtensilsCrossed, Users, BarChart3, LogOut, Home, X, ClipboardList } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -19,6 +19,7 @@ import {
 const items = [
   { title: "Overview", url: "/admin", icon: LayoutDashboard },
   { title: "Orders", url: "/admin/orders", icon: Package },
+  { title: "Table Orders", url: "/admin/table-orders", icon: ClipboardList },
   { title: "Reservations", url: "/admin/reservations", icon: CalendarDays },
   { title: "Menu", url: "/admin/menu", icon: UtensilsCrossed },
   { title: "Users", url: "/admin/users", icon: Users },

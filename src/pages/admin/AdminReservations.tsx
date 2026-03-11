@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useOrders } from "@/context/OrderContext";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import type { Reservation } from "@/context/OrderContext";
 
 const statusColor: Record<string, string> = {
@@ -9,16 +11,33 @@ const statusColor: Record<string, string> = {
 };
 
 const AdminReservations = () => {
-  const { reservations: allReservations, updateReservationStatus } = useOrders();
+  const { reservations: allReservations, updateReservationStatus, assignTableToReservation } = useOrders();
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [tableInputs, setTableInputs] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setReservations(allReservations);
+    // Initialize table inputs from existing assigned tables
+    const inputs: Record<string, string> = {};
+    allReservations.forEach((r) => {
+      if (r.assignedTable) inputs[r.id] = String(r.assignedTable);
+    });
+    setTableInputs(inputs);
   }, [allReservations]);
 
   const updateStatus = (id: string, status: Reservation["status"]) => {
     updateReservationStatus(id, status);
     setReservations(allReservations);
+  };
+
+  const handleAssignTable = (id: string) => {
+    const num = parseInt(tableInputs[id] || "", 10);
+    if (!num || num < 1) {
+      toast.error("Enter a valid table number");
+      return;
+    }
+    assignTableToReservation(id, num);
+    toast.success(`Table #${num} assigned successfully`);
   };
 
   return (
@@ -27,10 +46,10 @@ const AdminReservations = () => {
 
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[600px]">
+          <table className="w-full min-w-[800px]">
             <thead>
               <tr className="border-b border-border bg-muted/50">
-                {["ID", "Guest", "Phone", "Guests", "Date", "Time", "Notes", "Status", "Actions"].map((h) => (
+                {["ID", "Guest", "Phone", "Guests", "Date", "Time", "Notes", "Status", "Table #", "Actions"].map((h) => (
                   <th key={h} className="text-left font-body text-xs font-semibold text-muted-foreground p-3">{h}</th>
                 ))}
               </tr>
@@ -46,6 +65,27 @@ const AdminReservations = () => {
                   <td className="font-body text-sm p-3">{r.time}</td>
                   <td className="font-body text-xs p-3 text-muted-foreground max-w-[150px] truncate">{r.notes || "—"}</td>
                   <td className="p-3"><span className={`font-body text-xs px-2.5 py-1 rounded-full capitalize ${statusColor[r.status]}`}>{r.status}</span></td>
+                  <td className="p-3">
+                    {r.status === "confirmed" ? (
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="number"
+                          min={1}
+                          placeholder="#"
+                          value={tableInputs[r.id] || ""}
+                          onChange={(e) => setTableInputs((p) => ({ ...p, [r.id]: e.target.value }))}
+                          className="w-16 px-2 py-1 text-xs font-body border border-border rounded-lg bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+                        />
+                        <Button size="sm" variant="outline" onClick={() => handleAssignTable(r.id)} className="h-7 px-2 text-xs font-body">
+                          Assign
+                        </Button>
+                      </div>
+                    ) : r.assignedTable ? (
+                      <span className="font-body text-sm font-semibold text-primary">#{r.assignedTable}</span>
+                    ) : (
+                      <span className="font-body text-xs text-muted-foreground">—</span>
+                    )}
+                  </td>
                   <td className="p-3">
                     <select
                       value={r.status}

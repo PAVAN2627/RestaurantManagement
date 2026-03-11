@@ -34,7 +34,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return [...prev, { ...item, qty: 1 }];
     });
-    setIsCartOpen(true);
   }, []);
 
   const removeItem = useCallback((id: string) => {

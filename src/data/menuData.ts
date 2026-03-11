@@ -13,20 +13,21 @@ export interface MenuItem {
   price: number;
   image: string;
   isAvailable: boolean;
+  isVeg: boolean;
   ingredients?: string[];
 }
 
-export const categories = ["All", "Starters", "Main Course", "Pizza & Pasta", "Desserts", "Salads", "Biryani"];
+export const categories = ["Starters", "Main Course", "Pizza & Pasta", "Desserts", "Salads", "Biryani"];
 
 export const menuItems: MenuItem[] = [
-  { id: "1", name: "Butter Chicken", description: "Creamy tomato-based curry with tender chicken pieces, garnished with cream and cilantro.", category: "Main Course", price: 320, image: dish1, isAvailable: true, ingredients: ["Chicken", "Tomato", "Cream", "Butter", "Spices", "Cilantro"] },
-  { id: "2", name: "Margherita Pizza", description: "Classic thin-crust pizza with fresh mozzarella, basil, and San Marzano tomato sauce.", category: "Pizza & Pasta", price: 280, image: dish2, isAvailable: true, ingredients: ["Pizza dough", "Mozzarella", "Tomato sauce", "Fresh basil", "Olive oil"] },
-  { id: "3", name: "Grilled Salmon", description: "Fresh Atlantic salmon fillet grilled with herbs and served with lemon butter sauce.", category: "Main Course", price: 450, image: dish3, isAvailable: true, ingredients: ["Salmon fillet", "Lemon", "Herbs", "Butter", "Garlic"] },
-  { id: "4", name: "Chocolate Lava Cake", description: "Rich dark chocolate cake with a molten center, dusted with powdered sugar.", category: "Desserts", price: 180, image: dish4, isAvailable: true, ingredients: ["Dark chocolate", "Butter", "Eggs", "Sugar", "Flour"] },
-  { id: "5", name: "Caesar Salad", description: "Crisp romaine lettuce with parmesan shavings, croutons, and classic Caesar dressing.", category: "Salads", price: 200, image: dish5, isAvailable: true, ingredients: ["Romaine lettuce", "Parmesan", "Croutons", "Caesar dressing", "Anchovies"] },
-  { id: "6", name: "Hyderabadi Biryani", description: "Fragrant basmati rice layered with aromatic spices, saffron, and fried onions.", category: "Biryani", price: 350, image: dish6, isAvailable: true, ingredients: ["Basmati rice", "Saffron", "Spices", "Onions", "Yogurt", "Mint"] },
-  { id: "7", name: "Paneer Tikka", description: "Marinated cottage cheese cubes grilled in tandoor with bell peppers and onions.", category: "Starters", price: 220, image: dish1, isAvailable: true, ingredients: ["Paneer", "Bell peppers", "Onions", "Yogurt", "Tandoori masala"] },
-  { id: "8", name: "Pasta Alfredo", description: "Creamy fettuccine alfredo with parmesan and garlic butter sauce.", category: "Pizza & Pasta", price: 260, image: dish2, isAvailable: true, ingredients: ["Fettuccine", "Parmesan", "Cream", "Garlic", "Butter"] },
+  { id: "1", name: "Butter Chicken", description: "Creamy tomato-based curry with tender chicken pieces, garnished with cream and cilantro.", category: "Main Course", price: 320, image: dish1, isAvailable: true, isVeg: false, ingredients: ["Chicken", "Tomato", "Cream", "Butter", "Spices", "Cilantro"] },
+  { id: "2", name: "Margherita Pizza", description: "Classic thin-crust pizza with fresh mozzarella, basil, and San Marzano tomato sauce.", category: "Pizza & Pasta", price: 280, image: dish2, isAvailable: true, isVeg: true, ingredients: ["Pizza dough", "Mozzarella", "Tomato sauce", "Fresh basil", "Olive oil"] },
+  { id: "3", name: "Grilled Salmon", description: "Fresh Atlantic salmon fillet grilled with herbs and served with lemon butter sauce.", category: "Main Course", price: 450, image: dish3, isAvailable: true, isVeg: false, ingredients: ["Salmon fillet", "Lemon", "Herbs", "Butter", "Garlic"] },
+  { id: "4", name: "Chocolate Lava Cake", description: "Rich dark chocolate cake with a molten center, dusted with powdered sugar.", category: "Desserts", price: 180, image: dish4, isAvailable: true, isVeg: true, ingredients: ["Dark chocolate", "Butter", "Eggs", "Sugar", "Flour"] },
+  { id: "5", name: "Caesar Salad", description: "Crisp romaine lettuce with parmesan shavings, croutons, and classic Caesar dressing.", category: "Salads", price: 200, image: dish5, isAvailable: true, isVeg: true, ingredients: ["Romaine lettuce", "Parmesan", "Croutons", "Caesar dressing", "Anchovies"] },
+  { id: "6", name: "Hyderabadi Biryani", description: "Fragrant basmati rice layered with aromatic spices, saffron, and fried onions.", category: "Biryani", price: 350, image: dish6, isAvailable: true, isVeg: false, ingredients: ["Basmati rice", "Saffron", "Spices", "Onions", "Yogurt", "Mint"] },
+  { id: "7", name: "Paneer Tikka", description: "Marinated cottage cheese cubes grilled in tandoor with bell peppers and onions.", category: "Starters", price: 220, image: dish1, isAvailable: true, isVeg: true, ingredients: ["Paneer", "Bell peppers", "Onions", "Yogurt", "Tandoori masala"] },
+  { id: "8", name: "Pasta Alfredo", description: "Creamy fettuccine alfredo with parmesan and garlic butter sauce.", category: "Pizza & Pasta", price: 260, image: dish2, isAvailable: true, isVeg: true, ingredients: ["Fettuccine", "Parmesan", "Cream", "Garlic", "Butter"] },
 ];
 
 // Mock orders
@@ -92,5 +93,32 @@ export const mockUsers: AppUser[] = [
   { id: "a1", name: "Admin Chef", email: "admin@spicegarden.in", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin", role: "admin", createdAt: "2025-01-01", lastLogin: "2026-03-06", totalOrders: 0 },
 ];
 
-// Gallery images
+// Gallery images by category
+export interface GalleryItem {
+  image: string;
+  title: string;
+  category: string;
+}
+
+export const galleryCategories = ["Starters", "Main Course", "Pizza & Pasta", "Desserts", "Salads", "Biryani"];
+
+export const galleryItems: GalleryItem[] = [
+  { image: dish1, title: "Butter Chicken", category: "Main Course" },
+  { image: dish3, title: "Grilled Salmon", category: "Main Course" },
+  { image: dish1, title: "Paneer Tikka", category: "Starters" },
+  { image: dish5, title: "Samosa Platter", category: "Starters" },
+  { image: dish3, title: "Spring Rolls", category: "Starters" },
+  { image: dish2, title: "Margherita Pizza", category: "Pizza & Pasta" },
+  { image: dish2, title: "Pasta Alfredo", category: "Pizza & Pasta" },
+  { image: dish4, title: "Chocolate Lava Cake", category: "Desserts" },
+  { image: dish6, title: "Gulab Jamun", category: "Desserts" },
+  { image: dish4, title: "Rasmalai", category: "Desserts" },
+  { image: dish5, title: "Caesar Salad", category: "Salads" },
+  { image: dish5, title: "Greek Salad", category: "Salads" },
+  { image: dish6, title: "Hyderabadi Biryani", category: "Biryani" },
+  { image: dish6, title: "Lucknowi Biryani", category: "Biryani" },
+  { image: dish3, title: "Chicken Seekh Kebab", category: "Starters" },
+];
+
+// Legacy flat gallery (keep for backward compat)
 export const galleryImages = [dish1, dish2, dish3, dish4, dish5, dish6, dish1, dish2, dish3];

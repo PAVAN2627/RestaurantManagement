@@ -103,6 +103,12 @@ const UserReservations = () => {
                   <p className="font-body text-sm">
                     <span className="text-muted-foreground">Guests:</span> {reservation.guests} people
                   </p>
+                  {reservation.assignedTable && (
+                    <p className="font-body text-sm">
+                      <span className="text-muted-foreground">Assigned Table:</span>{" "}
+                      <span className="font-bold text-primary">#{reservation.assignedTable}</span>
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
