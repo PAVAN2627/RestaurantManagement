@@ -1,4 +1,5 @@
-import { UtensilsCrossed, Heart, Award, Users, Sparkles, ChefHat, Leaf } from "lucide-react";
+import { Link } from "react-router-dom";
+import { UtensilsCrossed, Heart, Award, Users, Sparkles, Leaf, ArrowRight } from "lucide-react";
 import { useCountUp } from "@/hooks/useCountUp";
 
 const StatCounter = ({ value, label }: { value: string; label: string }) => {
@@ -69,6 +70,24 @@ const AboutPage = () => {
     { value: "4.5/5★", label: "Average Rating" },
   ];
 
+  const milestones = [
+    {
+      year: "2020",
+      title: "The First Kitchen",
+      desc: "Started as a family-run kitchen with a focused menu of regional Indian classics.",
+    },
+    {
+      year: "2022",
+      title: "Community Favorite",
+      desc: "Expanded our team and menu after earning loyal local support and repeat guests.",
+    },
+    {
+      year: "Today",
+      title: "Tradition Meets Modern",
+      desc: "Continuing to serve authentic flavor with refined presentation and warm hospitality.",
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-background overflow-hidden">
       {/* Hero Section */}
@@ -91,6 +110,21 @@ const AboutPage = () => {
           <p className="font-body text-secondary-foreground/70 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto animate-fade-in-up stagger-1">
             Founded in 2020, Spice Garden is a celebration of culinary art — blending time-honored Indian traditions with modern innovation. Every dish is crafted from locally sourced, seasonal ingredients by our team of passionate chefs.
           </p>
+
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto animate-fade-in-up stagger-2">
+            <div className="bg-secondary-foreground/5 backdrop-blur-sm border border-secondary-foreground/15 rounded-xl px-4 py-3">
+              <p className="font-body text-xs uppercase tracking-wider text-secondary-foreground/60">Signature Dishes</p>
+              <p className="font-display text-2xl font-bold text-secondary-foreground">50+</p>
+            </div>
+            <div className="bg-secondary-foreground/5 backdrop-blur-sm border border-secondary-foreground/15 rounded-xl px-4 py-3">
+              <p className="font-body text-xs uppercase tracking-wider text-secondary-foreground/60">Happy Guests</p>
+              <p className="font-display text-2xl font-bold text-secondary-foreground">10K+</p>
+            </div>
+            <div className="bg-secondary-foreground/5 backdrop-blur-sm border border-secondary-foreground/15 rounded-xl px-4 py-3">
+              <p className="font-body text-xs uppercase tracking-wider text-secondary-foreground/60">Average Rating</p>
+              <p className="font-display text-2xl font-bold text-secondary-foreground">4.5/5</p>
+            </div>
+          </div>
         </div>
 
         <div className="absolute bottom-0 left-0 right-0">
@@ -172,41 +206,29 @@ const AboutPage = () => {
           </div>
         </div>
 
-        {/* Chef's Message */}
-        <div className="mb-16 animate-fade-in-up">
-          <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-2 border-primary/20 rounded-3xl p-8 md:p-12 hover-lift relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-40 h-40 bg-primary/10 rounded-full -translate-y-1/2 -translate-x-1/2" />
-            <div className="absolute bottom-0 right-0 w-40 h-40 bg-primary/10 rounded-full translate-y-1/2 translate-x-1/2" />
-            
-            <div className="flex flex-col md:flex-row items-start gap-6 mb-6 relative">
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl" />
-                <img 
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Chef&backgroundColor=c0aede&radius=50" 
-                  alt="Head Chef" 
-                  className="w-20 h-20 rounded-full border-4 border-primary shadow-xl relative hover-scale"
-                />
-                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary rounded-full flex items-center justify-center border-2 border-background">
-                  <ChefHat className="w-4 h-4 text-primary-foreground" />
+        {/* Timeline */}
+        <div className="mb-16">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-center mb-12 animate-fade-in-up">
+            Our <span className="gradient-text">Timeline</span>
+          </h2>
+
+          <div className="relative">
+            <div className="hidden md:block absolute left-1/2 top-2 bottom-2 w-px bg-border -translate-x-1/2" />
+            <div className="space-y-6 md:space-y-8">
+              {milestones.map((item, i) => (
+                <div key={item.title} className={`grid md:grid-cols-2 gap-4 md:gap-10 items-center animate-fade-in-up stagger-${i + 1}`}>
+                  <div className={`bg-card border border-border rounded-2xl p-6 hover-lift ${i % 2 === 1 ? "md:order-2" : ""}`}>
+                    <p className="font-body text-xs font-semibold tracking-widest text-primary uppercase mb-2">{item.year}</p>
+                    <h3 className="font-display text-2xl font-bold mb-2">{item.title}</h3>
+                    <p className="font-body text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                  </div>
+
+                  <div className={`hidden md:flex justify-center ${i % 2 === 1 ? "md:order-1" : ""}`}>
+                    <span className="w-3.5 h-3.5 rounded-full bg-primary shadow-[0_0_20px_hsl(var(--primary)/0.6)]" />
+                  </div>
                 </div>
-              </div>
-              <div>
-                <h3 className="font-display text-2xl md:text-3xl font-bold mb-1">Chef Vikram Malhotra</h3>
-                <p className="font-body text-sm text-muted-foreground mb-2">Head Chef & Co-Founder</p>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-primary text-lg">★</span>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
-            
-            <blockquote className="font-body text-muted-foreground leading-relaxed border-l-4 border-primary pl-6 relative">
-              <span className="absolute -top-2 -left-2 text-6xl text-primary/20 font-serif">"</span>
-              <p className="text-base md:text-lg italic">
-                At Spice Garden, we believe that food is not just sustenance — it's an experience, a memory, a celebration. Every dish we create is a labor of love, combining the wisdom of traditional Indian cooking with contemporary techniques. When you dine with us, you're not just eating a meal; you're embarking on a culinary journey through the diverse regions of India. That's our promise to you.
-              </p>
-            </blockquote>
           </div>
         </div>
 
@@ -219,6 +241,30 @@ const AboutPage = () => {
             {stats.map((stat, i) => (
               <StatCounter key={i} value={stat.value} label={stat.label} />
             ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="mt-16 bg-card border border-border rounded-3xl p-8 md:p-10 text-center animate-fade-in-up relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-3 relative">Experience Spice Garden</h2>
+          <p className="font-body text-muted-foreground max-w-2xl mx-auto mb-8 relative">
+            Ready for bold spices, comforting classics, and memorable hospitality? Explore our menu or reserve your table in seconds.
+          </p>
+          <div className="relative flex flex-wrap justify-center gap-4">
+            <Link
+              to="/menu"
+              className="group inline-flex items-center gap-2 bg-primary text-primary-foreground font-body font-semibold px-7 py-3.5 rounded-xl hover:bg-primary/90 transition-all hover-lift"
+            >
+              View Menu
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              to="/reservation"
+              className="inline-flex items-center gap-2 border-2 border-border font-body font-semibold px-7 py-3.5 rounded-xl hover:border-primary hover:text-primary transition-all hover-lift"
+            >
+              Reserve a Table
+            </Link>
           </div>
         </div>
       </div>

@@ -39,8 +39,8 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container flex items-center justify-between h-16 md:h-20">
-        <Link to="/" className="font-display text-2xl font-bold text-foreground tracking-tight">
-          Spice Garden<span className="text-primary">.</span>
+        <Link to="/" className="flex items-center" aria-label="Athenura Home">
+          <img src="/Athenura%20logo.png" alt="Athenura" className="h-10 md:h-12 w-auto object-contain" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">

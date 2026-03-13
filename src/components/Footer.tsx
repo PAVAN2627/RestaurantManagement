@@ -13,9 +13,7 @@ const Footer = () => {
     <footer className="bg-secondary text-secondary-foreground pt-16 pb-8">
       <div className="container grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
         <div>
-          <h3 className="font-display text-2xl font-bold mb-4">
-            Spice Garden<span className="text-primary">.</span>
-          </h3>
+          <img src="/athenurawhitelogo.png" alt="Athenura" className="h-16 md:h-20 w-auto object-contain mb-4" />
           <p className="font-body text-sm text-secondary-foreground/70 leading-relaxed">
             A culinary experience that blends tradition with innovation. Every dish tells a story of passion and flavor.
           </p>
@@ -49,7 +47,7 @@ const Footer = () => {
       </div>
       <div className="container border-t border-secondary-foreground/10 pt-6">
         <p className="text-center font-body text-xs text-secondary-foreground/50">
-          © 2026 Spice Garden Restaurant. All rights reserved.
+          © 2026 Athenura Restaurant. All rights reserved.
         </p>
       </div>
     </footer>

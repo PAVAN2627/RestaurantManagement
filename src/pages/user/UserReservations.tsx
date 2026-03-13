@@ -16,6 +16,18 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { Reservation } from "@/context/OrderContext";
 
+const timeToMinutes = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
+const addMinutesToTime = (time: string, minutesToAdd: number) => {
+  const total = timeToMinutes(time) + minutesToAdd;
+  const hours = Math.floor(total / 60);
+  const minutes = total % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+};
+
 const statusColor: Record<string, string> = {
   pending: "bg-yellow-200 text-yellow-800",
   confirmed: "bg-primary/20 text-primary",
@@ -99,7 +111,8 @@ const UserReservations = () => {
                     <span className="text-muted-foreground">Date:</span> {reservation.date}
                   </p>
                   <p className="font-body text-sm">
-                    <span className="text-muted-foreground">Time:</span> {reservation.time}
+                    <span className="text-muted-foreground">Time:</span>{" "}
+                    {(reservation.startTime || reservation.time)} - {(reservation.endTime || addMinutesToTime(reservation.startTime || reservation.time, 60))}
                   </p>
                   <p className="font-body text-sm">
                     <span className="text-muted-foreground">Guests:</span> {reservation.guests} people

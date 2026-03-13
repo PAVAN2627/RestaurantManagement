@@ -6,12 +6,23 @@ import { useAuth } from "@/context/AuthContext";
 import { useOrders } from "@/context/OrderContext";
 import { useNavigate } from "react-router-dom";
 
+const reservationStartSlots = Array.from({ length: 12 }, (_, i) => `${String(i + 8).padStart(2, "0")}:00`);
+const reservationEndSlots = Array.from({ length: 12 }, (_, i) => `${String(i + 9).padStart(2, "0")}:00`);
+const timeToMinutes = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
 const ReservationPage = () => {
   const { user, isLoggedIn } = useAuth();
-  const { addReservation } = useOrders();
+  const { addReservation, getAvailableTables, getTableRangeForGuests } = useOrders();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", phone: "", guests: "2", date: "", time: "", notes: "" });
-  const [successPopup, setSuccessPopup] = useState<{ show: boolean; bookingId: string }>({ show: false, bookingId: "" });
+  const [form, setForm] = useState({ name: "", phone: "", guests: "2", date: "", startTime: "", endTime: "", notes: "" });
+  const [successPopup, setSuccessPopup] = useState<{ show: boolean; bookingId: string; tableNumber?: number }>({
+    show: false,
+    bookingId: "",
+    tableNumber: undefined,
+  });
 
   // Prefill form with user data if logged in
   useEffect(() => {
@@ -24,33 +35,83 @@ const ReservationPage = () => {
     }
   }, [user]);
 
+  const guestsCount = parseInt(form.guests, 10);
+  const tableRange = getTableRangeForGuests(guestsCount);
+  const availableTables =
+    form.date && form.startTime && form.endTime
+      ? getAvailableTables(form.date, form.startTime, form.endTime, guestsCount)
+      : [];
+  const hasSlotSelection = Boolean(form.date && form.startTime && form.endTime);
+  const isValidReservationRange = (startTime: string, endTime: string) => {
+    return (
+      startTime >= "08:00" &&
+      endTime <= "20:00" &&
+      timeToMinutes(startTime) < timeToMinutes(endTime)
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.phone || !form.date || !form.time) {
+    if (!form.name || !form.phone || !form.date || !form.startTime || !form.endTime) {
       toast.error("Please fill all required fields");
       return;
     }
+
+    if (!isValidReservationRange(form.startTime, form.endTime)) {
+      toast.error("Select a valid time range between 8:00 AM and 8:00 PM");
+      return;
+    }
+
+    if (availableTables.length === 0) {
+      toast.error("No tables available for this date/time range. Please choose another slot.");
+      return;
+    }
     
-    // Save reservation to localStorage
-    const newReservation = addReservation({
-      userId: user!.id,
-      name: form.name,
-      phone: form.phone,
-      guests: parseInt(form.guests),
-      date: form.date,
-      time: form.time,
-      notes: form.notes,
-      status: "pending",
-    });
+    let newReservation;
+    try {
+      // Auto-assign the first available table in the computed guest range.
+      newReservation = addReservation({
+        userId: user!.id,
+        name: form.name,
+        email: user?.email,
+        phone: form.phone,
+        guests: guestsCount,
+        date: form.date,
+        time: form.startTime,
+        startTime: form.startTime,
+        endTime: form.endTime,
+        notes: form.notes,
+        status: "pending",
+      });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to reserve table right now");
+      return;
+    }
     
-    setSuccessPopup({ show: true, bookingId: newReservation.id });
+    setSuccessPopup({ show: true, bookingId: newReservation.id, tableNumber: newReservation.assignedTable });
     setTimeout(() => {
-      setSuccessPopup({ show: false, bookingId: "" });
+      setSuccessPopup({ show: false, bookingId: "", tableNumber: undefined });
       navigate("/profile/reservations");
     }, 3000);
   };
 
-  const update = (field: string, value: string) => setForm((p) => ({ ...p, [field]: value }));
+  const update = (field: string, value: string) => {
+    setForm((prev) => {
+      const next = { ...prev, [field]: value };
+
+      // Ensure end time is always after selected start time.
+      if (
+        (field === "startTime" || field === "endTime") &&
+        next.startTime &&
+        next.endTime &&
+        timeToMinutes(next.endTime) <= timeToMinutes(next.startTime)
+      ) {
+        next.endTime = "";
+      }
+
+      return next;
+    });
+  };
 
   // Require login before making reservation
   if (!isLoggedIn) {
@@ -133,7 +194,7 @@ const ReservationPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
             <div>
               <label className="font-body text-sm font-medium mb-1.5 flex items-center gap-1.5"><Users className="w-4 h-4 text-primary" /> Guests</label>
               <select value={form.guests} onChange={(e) => update("guests", e.target.value)} className="w-full px-4 py-2.5 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
@@ -145,9 +206,58 @@ const ReservationPage = () => {
               <input type="date" value={form.date} onChange={(e) => update("date", e.target.value)} min={new Date().toISOString().split("T")[0]} className="w-full px-4 py-2.5 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
             </div>
             <div>
-              <label className="font-body text-sm font-medium mb-1.5 flex items-center gap-1.5"><Clock className="w-4 h-4 text-primary" /> Time *</label>
-              <input type="time" value={form.time} onChange={(e) => update("time", e.target.value)} className="w-full px-4 py-2.5 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+              <label className="font-body text-sm font-medium mb-1.5 flex items-center gap-1.5"><Clock className="w-4 h-4 text-primary" /> Start *</label>
+              <select value={form.startTime} onChange={(e) => update("startTime", e.target.value)} className="w-full px-4 py-2.5 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+                <option value="">Start time</option>
+                {reservationStartSlots.map((slot) => (
+                  <option key={slot} value={slot}>{slot}</option>
+                ))}
+              </select>
             </div>
+            <div>
+              <label className="font-body text-sm font-medium mb-1.5 flex items-center gap-1.5"><Clock className="w-4 h-4 text-primary" /> End *</label>
+              <select value={form.endTime} onChange={(e) => update("endTime", e.target.value)} className="w-full px-4 py-2.5 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+                <option value="">End time</option>
+                {reservationEndSlots
+                  .filter((slot) => !form.startTime || timeToMinutes(slot) > timeToMinutes(form.startTime))
+                  .map((slot) => (
+                    <option key={slot} value={slot}>{slot}</option>
+                  ))}
+              </select>
+              <p className="font-body text-[11px] text-muted-foreground mt-1">Time window: 08:00 AM to 08:00 PM</p>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-2">
+            <p className="font-body text-sm font-semibold">
+              Table Range for {guestsCount} {guestsCount === 1 ? "Guest" : "Guests"}: #{tableRange.start} - #{tableRange.end}
+            </p>
+
+            {!hasSlotSelection ? (
+              <p className="font-body text-xs text-muted-foreground">
+                Select date, start, and end time to see available table numbers.
+              </p>
+            ) : availableTables.length === 0 ? (
+              <p className="font-body text-xs text-destructive font-medium">
+                No tables are available for this slot.
+              </p>
+            ) : (
+              <>
+                <p className="font-body text-xs text-muted-foreground">
+                  Available tables: {availableTables.length}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {availableTables.map((tableNo) => (
+                    <span
+                      key={tableNo}
+                      className="font-body text-xs px-2.5 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary"
+                    >
+                      #{tableNo}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           <div>
@@ -155,7 +265,7 @@ const ReservationPage = () => {
             <textarea value={form.notes} onChange={(e) => update("notes", e.target.value)} rows={3} className="w-full px-4 py-2.5 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none" placeholder="Any dietary needs or special requests?" />
           </div>
 
-          <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-body font-semibold py-3 text-base">
+          <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-body font-semibold py-3 text-base" disabled={hasSlotSelection && availableTables.length === 0}>
             Confirm Reservation
           </Button>
         </form>
@@ -167,7 +277,7 @@ const ReservationPage = () => {
           <div className="relative bg-card border border-border rounded-3xl p-8 max-w-sm w-full mx-4 text-center shadow-2xl">
             {/* Close button */}
             <button
-              onClick={() => { setSuccessPopup({ show: false, bookingId: "" }); navigate("/profile/reservations"); }}
+              onClick={() => { setSuccessPopup({ show: false, bookingId: "", tableNumber: undefined }); navigate("/profile/reservations"); }}
               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-5 h-5" />
@@ -198,6 +308,11 @@ const ReservationPage = () => {
             <div className="bg-muted/50 rounded-xl px-4 py-3 mb-5">
               <p className="font-body text-xs text-muted-foreground">Booking ID</p>
               <p className="font-body font-bold text-primary text-lg">{successPopup.bookingId}</p>
+              {successPopup.tableNumber && (
+                <p className="font-body text-sm mt-1">
+                  Assigned Table: <span className="font-bold text-primary">#{successPopup.tableNumber}</span>
+                </p>
+              )}
             </div>
 
             {/* Progress bar auto-dismiss */}

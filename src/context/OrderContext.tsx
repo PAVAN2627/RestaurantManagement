@@ -26,9 +26,12 @@ export interface Reservation {
   id: string;
   userId: string;
   name: string;
+  email?: string;
   phone: string;
   guests: number;
   date: string;
+  startTime?: string;
+  endTime?: string;
   time: string;
   notes: string;
   status: "pending" | "confirmed" | "cancelled" | "completed";
@@ -36,23 +39,106 @@ export interface Reservation {
   createdAt: string;
 }
 
+interface TableRange {
+  start: number;
+  end: number;
+}
+
 interface OrderContextType {
   orders: Order[];
   reservations: Reservation[];
   addOrder: (order: Omit<Order, "id" | "createdAt">) => Order;
-  addReservation: (reservation: Omit<Reservation, "id" | "createdAt">) => Reservation;
+  addReservation: (reservation: Omit<Reservation, "id" | "createdAt" | "assignedTable">) => Reservation;
   updateOrderStatus: (orderId: string, status: Order["status"], cancellationReason?: string) => void;
   updateReservationStatus: (reservationId: string, status: Reservation["status"]) => void;
   assignTableToReservation: (reservationId: string, tableNumber: number) => void;
+  getTableRangeForGuests: (guests: number) => TableRange;
+  getAvailableTables: (date: string, startTime: string, endTime: string, guests: number) => number[];
   getUserOrders: (userId: string) => Order[];
   getUserReservations: (userId: string) => Reservation[];
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
+const timeToMinutes = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
+const minutesToTime = (minutes: number) => {
+  const safe = ((minutes % 1440) + 1440) % 1440;
+  const hours = Math.floor(safe / 60);
+  const mins = safe % 60;
+  return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
+};
+
+const addMinutesToTime = (time: string, minutesToAdd: number) => {
+  return minutesToTime(timeToMinutes(time) + minutesToAdd);
+};
+
+const intervalsOverlap = (
+  startA: string,
+  endA: string,
+  startB: string,
+  endB: string
+) => {
+  const aStart = timeToMinutes(startA);
+  const aEnd = timeToMinutes(endA);
+  const bStart = timeToMinutes(startB);
+  const bEnd = timeToMinutes(endB);
+  return aStart < bEnd && bStart < aEnd;
+};
+
 export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
+
+  const getTableRangeForGuests = useCallback((guests: number): TableRange => {
+    const safeGuests = Number.isFinite(guests) && guests > 0 ? Math.floor(guests) : 1;
+
+    // Requested rule base:
+    // 1 guest => tables 1-5
+    // 2 guests => tables 6-20
+    // Continue in the same pattern (15-table blocks for each next guest count).
+    if (safeGuests === 1) {
+      return { start: 1, end: 5 };
+    }
+
+    const start = 6 + (safeGuests - 2) * 15;
+    return { start, end: start + 14 };
+  }, []);
+
+  const getAvailableTables = useCallback(
+    (date: string, startTime: string, endTime: string, guests: number) => {
+      const range = getTableRangeForGuests(guests);
+      const reservedTableSet = new Set(
+        reservations
+          .filter(
+            (reservation) =>
+              reservation.date === date &&
+              reservation.status !== "cancelled" &&
+              intervalsOverlap(
+                reservation.startTime || reservation.time,
+                reservation.endTime || addMinutesToTime(reservation.startTime || reservation.time, 60),
+                startTime,
+                endTime
+              ) &&
+              reservation.assignedTable !== undefined
+          )
+          .map((reservation) => reservation.assignedTable as number)
+      );
+
+      const available: number[] = [];
+      for (let table = range.start; table <= range.end; table += 1) {
+        if (!reservedTableSet.has(table)) {
+          available.push(table);
+        }
+      }
+
+      return available;
+    },
+    [getTableRangeForGuests, reservations]
+  );
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -91,15 +177,42 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return newOrder;
   }, []);
 
-  const addReservation = useCallback((reservationData: Omit<Reservation, "id" | "createdAt">) => {
-    const newReservation: Reservation = {
-      ...reservationData,
-      id: `RES${Date.now()}`,
-      createdAt: new Date().toISOString(),
-    };
-    setReservations((prev) => [newReservation, ...prev]);
-    return newReservation;
-  }, []);
+  const addReservation = useCallback(
+    (reservationData: Omit<Reservation, "id" | "createdAt" | "assignedTable">) => {
+      const normalizedStartTime = reservationData.startTime || reservationData.time;
+      const normalizedEndTime = reservationData.endTime || addMinutesToTime(normalizedStartTime, 60);
+
+      if (timeToMinutes(normalizedStartTime) >= timeToMinutes(normalizedEndTime)) {
+        throw new Error("End time must be later than start time.");
+      }
+
+      const availableTables = getAvailableTables(
+        reservationData.date,
+        normalizedStartTime,
+        normalizedEndTime,
+        reservationData.guests
+      );
+
+      if (availableTables.length === 0) {
+        throw new Error("No tables available for the selected date/time slot.");
+      }
+
+      const newReservation: Reservation = {
+        ...reservationData,
+        time: normalizedStartTime,
+        startTime: normalizedStartTime,
+        endTime: normalizedEndTime,
+        id: `RES${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        assignedTable: availableTables[0],
+      };
+
+      setReservations((prev) => [newReservation, ...prev]);
+      window.dispatchEvent(new Event("reservationsUpdated"));
+      return newReservation;
+    },
+    [getAvailableTables]
+  );
 
   const updateOrderStatus = useCallback((orderId: string, status: Order["status"], cancellationReason?: string) => {
     setOrders((prev) =>
@@ -155,6 +268,8 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updateOrderStatus,
         updateReservationStatus,
         assignTableToReservation,
+        getTableRangeForGuests,
+        getAvailableTables,
         getUserOrders,
         getUserReservations,
       }}

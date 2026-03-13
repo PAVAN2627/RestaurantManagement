@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Star, Clock, MapPin, Utensils, ShoppingBag, UtensilsCrossed } from "lucide-react";
+import { ArrowRight, Star, MapPin, Utensils, ShoppingBag, UtensilsCrossed } from "lucide-react";
 import heroImg from "@/assets/hero-restaurant.jpg";
 import { menuItems } from "@/data/menuData";
 import MenuCard from "@/components/MenuCard";
@@ -35,15 +35,6 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left: Text Content */}
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 bg-primary/15 backdrop-blur-sm border border-primary/25 rounded-full px-5 py-2.5 mb-8 animate-fade-in-down">
-                <div className="flex -space-x-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 text-primary fill-primary" />
-                  ))}
-                </div>
-                <span className="font-body text-primary font-semibold tracking-wide text-xs uppercase">Award-Winning Dining</span>
-              </div>
-
               <h1 className="font-display text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-secondary-foreground leading-[0.95] mb-8 animate-fade-in-up">
                 Savor the
                 <br />
@@ -83,7 +74,6 @@ const Index = () => {
                 {[
                   { icon: Utensils, value: "150+", label: "Dishes" },
                   { icon: Star, value: "4.9", label: "Rating" },
-                  { icon: Clock, value: "30 min", label: "Avg. Delivery" },
                 ].map((stat) => (
                   <div key={stat.label} className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
