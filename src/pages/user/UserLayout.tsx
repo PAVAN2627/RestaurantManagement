@@ -1,22 +1,23 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { UserSidebar } from "@/components/UserSidebar";
+import { useEffect } from "react";
 
 const UserLayout = () => {
   const { isLoggedIn, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  if (!isLoggedIn || !user) {
-    navigate("/login");
-    return null;
-  }
+  useEffect(() => {
+    if (!isLoggedIn || !user) {
+      navigate("/login", { state: { from: location.pathname }, replace: true });
+    } else if (user.role === "admin") {
+      navigate("/admin", { replace: true });
+    }
+  }, [isLoggedIn, user, navigate, location.pathname]);
 
-  // Redirect admins to admin panel
-  if (user.role === "admin") {
-    navigate("/admin");
-    return null;
-  }
+  if (!isLoggedIn || !user || user.role === "admin") return null;
 
   return (
     <div className="pt-16 md:pt-20 min-h-screen bg-white">

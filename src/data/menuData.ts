@@ -20,14 +20,41 @@ export interface MenuItem {
 export const categories = ["Starters", "Main Course", "Pizza & Pasta", "Desserts", "Salads", "Biryani"];
 
 export const menuItems: MenuItem[] = [
-  { id: "1", name: "Butter Chicken", description: "Creamy tomato-based curry with tender chicken pieces, garnished with cream and cilantro.", category: "Main Course", price: 320, image: dish1, isAvailable: true, isVeg: false, ingredients: ["Chicken", "Tomato", "Cream", "Butter", "Spices", "Cilantro"] },
-  { id: "2", name: "Margherita Pizza", description: "Classic thin-crust pizza with fresh mozzarella, basil, and San Marzano tomato sauce.", category: "Pizza & Pasta", price: 280, image: dish2, isAvailable: true, isVeg: true, ingredients: ["Pizza dough", "Mozzarella", "Tomato sauce", "Fresh basil", "Olive oil"] },
-  { id: "3", name: "Grilled Salmon", description: "Fresh Atlantic salmon fillet grilled with herbs and served with lemon butter sauce.", category: "Main Course", price: 450, image: dish3, isAvailable: true, isVeg: false, ingredients: ["Salmon fillet", "Lemon", "Herbs", "Butter", "Garlic"] },
-  { id: "4", name: "Chocolate Lava Cake", description: "Rich dark chocolate cake with a molten center, dusted with powdered sugar.", category: "Desserts", price: 180, image: dish4, isAvailable: true, isVeg: true, ingredients: ["Dark chocolate", "Butter", "Eggs", "Sugar", "Flour"] },
-  { id: "5", name: "Caesar Salad", description: "Crisp romaine lettuce with parmesan shavings, croutons, and classic Caesar dressing.", category: "Salads", price: 200, image: dish5, isAvailable: true, isVeg: true, ingredients: ["Romaine lettuce", "Parmesan", "Croutons", "Caesar dressing", "Anchovies"] },
-  { id: "6", name: "Hyderabadi Biryani", description: "Fragrant basmati rice layered with aromatic spices, saffron, and fried onions.", category: "Biryani", price: 350, image: dish6, isAvailable: true, isVeg: false, ingredients: ["Basmati rice", "Saffron", "Spices", "Onions", "Yogurt", "Mint"] },
-  { id: "7", name: "Paneer Tikka", description: "Marinated cottage cheese cubes grilled in tandoor with bell peppers and onions.", category: "Starters", price: 220, image: dish1, isAvailable: true, isVeg: true, ingredients: ["Paneer", "Bell peppers", "Onions", "Yogurt", "Tandoori masala"] },
-  { id: "8", name: "Pasta Alfredo", description: "Creamy fettuccine alfredo with parmesan and garlic butter sauce.", category: "Pizza & Pasta", price: 260, image: dish2, isAvailable: true, isVeg: true, ingredients: ["Fettuccine", "Parmesan", "Cream", "Garlic", "Butter"] },
+  // Starters
+  { id: "7",  name: "Paneer Tikka",          description: "Marinated cottage cheese cubes grilled in tandoor with bell peppers and onions.",          category: "Starters",      price: 220, image: dish1, isAvailable: true,  isVeg: true,  ingredients: ["Paneer", "Bell peppers", "Onions", "Yogurt", "Tandoori masala"] },
+  { id: "9",  name: "Chicken Seekh Kebab",   description: "Minced chicken mixed with spices, shaped on skewers and grilled over charcoal.",           category: "Starters",      price: 260, image: dish3, isAvailable: true,  isVeg: false, ingredients: ["Minced chicken", "Onion", "Green chilli", "Garam masala", "Coriander"] },
+  { id: "10", name: "Samosa (2 pcs)",         description: "Crispy golden pastry filled with spiced potatoes and peas, served with mint chutney.",     category: "Starters",      price: 80,  image: dish5, isAvailable: true,  isVeg: true,  ingredients: ["Potato", "Peas", "Pastry", "Cumin", "Coriander"] },
+  { id: "11", name: "Spring Rolls",           description: "Crispy vegetable-stuffed rolls served with sweet chilli dipping sauce.",                   category: "Starters",      price: 140, image: dish3, isAvailable: true,  isVeg: true,  ingredients: ["Cabbage", "Carrot", "Noodles", "Spring roll sheets", "Soy sauce"] },
+  { id: "12", name: "Chicken 65",             description: "Deep-fried spicy chicken bites tossed with curry leaves and green chillies.",              category: "Starters",      price: 240, image: dish1, isAvailable: true,  isVeg: false, ingredients: ["Chicken", "Red chilli", "Curry leaves", "Yogurt", "Ginger-garlic"] },
+
+  // Main Course
+  { id: "1",  name: "Butter Chicken",         description: "Creamy tomato-based curry with tender chicken pieces, garnished with cream and cilantro.", category: "Main Course",   price: 320, image: dish1, isAvailable: true,  isVeg: false, ingredients: ["Chicken", "Tomato", "Cream", "Butter", "Spices", "Cilantro"] },
+  { id: "3",  name: "Grilled Salmon",          description: "Fresh Atlantic salmon fillet grilled with herbs and served with lemon butter sauce.",      category: "Main Course",   price: 450, image: dish3, isAvailable: true,  isVeg: false, ingredients: ["Salmon fillet", "Lemon", "Herbs", "Butter", "Garlic"] },
+  { id: "13", name: "Dal Makhani",             description: "Slow-cooked black lentils simmered overnight with butter, cream and aromatic spices.",    category: "Main Course",   price: 240, image: dish6, isAvailable: true,  isVeg: true,  ingredients: ["Black lentils", "Butter", "Cream", "Tomato", "Spices"] },
+  { id: "14", name: "Palak Paneer",            description: "Fresh cottage cheese cubes in a smooth, spiced spinach gravy.",                           category: "Main Course",   price: 260, image: dish5, isAvailable: true,  isVeg: true,  ingredients: ["Paneer", "Spinach", "Onion", "Tomato", "Cream", "Spices"] },
+  { id: "15", name: "Mutton Rogan Josh",       description: "Slow-braised Kashmiri mutton in a bold, aromatic red gravy.",                             category: "Main Course",   price: 420, image: dish1, isAvailable: true,  isVeg: false, ingredients: ["Mutton", "Kashmiri chilli", "Yogurt", "Fennel", "Whole spices"] },
+
+  // Pizza & Pasta
+  { id: "2",  name: "Margherita Pizza",        description: "Classic thin-crust pizza with fresh mozzarella, basil, and San Marzano tomato sauce.",    category: "Pizza & Pasta", price: 280, image: dish2, isAvailable: true,  isVeg: true,  ingredients: ["Pizza dough", "Mozzarella", "Tomato sauce", "Fresh basil", "Olive oil"] },
+  { id: "8",  name: "Pasta Alfredo",           description: "Creamy fettuccine alfredo with parmesan and garlic butter sauce.",                        category: "Pizza & Pasta", price: 260, image: dish2, isAvailable: true,  isVeg: true,  ingredients: ["Fettuccine", "Parmesan", "Cream", "Garlic", "Butter"] },
+  { id: "16", name: "Chicken BBQ Pizza",       description: "Smoky BBQ chicken pizza with caramelised onions, jalapeños and mozzarella.",              category: "Pizza & Pasta", price: 340, image: dish2, isAvailable: true,  isVeg: false, ingredients: ["Chicken", "BBQ sauce", "Mozzarella", "Onion", "Jalapeño"] },
+  { id: "17", name: "Penne Arrabbiata",        description: "Penne tossed in a fiery tomato and garlic sauce with fresh basil.",                       category: "Pizza & Pasta", price: 230, image: dish2, isAvailable: true,  isVeg: true,  ingredients: ["Penne", "Tomato", "Garlic", "Red chilli", "Basil"] },
+
+  // Biryani
+  { id: "6",  name: "Hyderabadi Biryani",      description: "Fragrant basmati rice layered with aromatic spices, saffron, and fried onions.",          category: "Biryani",       price: 350, image: dish6, isAvailable: true,  isVeg: false, ingredients: ["Basmati rice", "Saffron", "Spices", "Onions", "Yogurt", "Mint"] },
+  { id: "18", name: "Veg Dum Biryani",         description: "Aromatic basmati rice slow-cooked with seasonal vegetables and whole spices.",            category: "Biryani",       price: 280, image: dish6, isAvailable: true,  isVeg: true,  ingredients: ["Basmati rice", "Mixed vegetables", "Saffron", "Whole spices", "Fried onions"] },
+  { id: "19", name: "Lucknowi Biryani",        description: "Delicate Awadhi-style biryani with tender mutton and subtle fragrant spices.",            category: "Biryani",       price: 390, image: dish6, isAvailable: true,  isVeg: false, ingredients: ["Basmati rice", "Mutton", "Kewra water", "Whole spices", "Saffron"] },
+
+  // Salads
+  { id: "5",  name: "Caesar Salad",            description: "Crisp romaine lettuce with parmesan shavings, croutons, and classic Caesar dressing.",    category: "Salads",        price: 200, image: dish5, isAvailable: true,  isVeg: true,  ingredients: ["Romaine lettuce", "Parmesan", "Croutons", "Caesar dressing", "Anchovies"] },
+  { id: "20", name: "Greek Salad",             description: "Fresh cucumber, tomato, olives and feta cheese tossed in olive oil and oregano.",         category: "Salads",        price: 180, image: dish5, isAvailable: true,  isVeg: true,  ingredients: ["Cucumber", "Tomato", "Feta", "Olives", "Olive oil", "Oregano"] },
+  { id: "21", name: "Kachumber Salad",         description: "Classic Indian salad of diced onion, tomato, cucumber with lemon and chaat masala.",      category: "Salads",        price: 120, image: dish5, isAvailable: true,  isVeg: true,  ingredients: ["Onion", "Tomato", "Cucumber", "Lemon", "Chaat masala"] },
+
+  // Desserts
+  { id: "4",  name: "Chocolate Lava Cake",     description: "Rich dark chocolate cake with a molten center, dusted with powdered sugar.",              category: "Desserts",      price: 180, image: dish4, isAvailable: true,  isVeg: true,  ingredients: ["Dark chocolate", "Butter", "Eggs", "Sugar", "Flour"] },
+  { id: "22", name: "Gulab Jamun",             description: "Soft milk-solid dumplings soaked in rose-flavoured sugar syrup, served warm.",            category: "Desserts",      price: 120, image: dish6, isAvailable: true,  isVeg: true,  ingredients: ["Khoya", "Flour", "Sugar syrup", "Rose water", "Cardamom"] },
+  { id: "23", name: "Rasmalai",                description: "Soft cottage cheese patties soaked in chilled saffron-infused sweetened milk.",           category: "Desserts",      price: 150, image: dish4, isAvailable: true,  isVeg: true,  ingredients: ["Chenna", "Milk", "Saffron", "Cardamom", "Pistachios"] },
+  { id: "24", name: "Mango Kulfi",             description: "Traditional Indian ice cream made with condensed milk and fresh Alphonso mango pulp.",    category: "Desserts",      price: 130, image: dish4, isAvailable: true,  isVeg: true,  ingredients: ["Condensed milk", "Mango pulp", "Cardamom", "Pistachios"] },
 ];
 
 // Mock orders
@@ -90,7 +117,7 @@ export const mockUsers: AppUser[] = [
   { id: "u2", name: "Priya Patel", email: "priya.patel@gmail.com", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya", role: "user", createdAt: "2025-09-20", lastLogin: "2026-03-05", totalOrders: 8 },
   { id: "u3", name: "Ankit Verma", email: "ankit.verma@gmail.com", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ankit", role: "user", createdAt: "2025-11-01", lastLogin: "2026-03-04", totalOrders: 5 },
   { id: "u4", name: "Sneha Gupta", email: "sneha.gupta@gmail.com", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sneha", role: "user", createdAt: "2026-01-10", lastLogin: "2026-03-03", totalOrders: 3 },
-  { id: "a1", name: "Admin Chef", email: "admin@spicegarden.in", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin", role: "admin", createdAt: "2025-01-01", lastLogin: "2026-03-06", totalOrders: 0 },
+  { id: "a1", name: "Admin Chef", email: "admin@athenura.in", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin", role: "admin", createdAt: "2025-01-01", lastLogin: "2026-03-06", totalOrders: 0 },
 ];
 
 // Gallery images by category
@@ -122,3 +149,9 @@ export const galleryItems: GalleryItem[] = [
 
 // Legacy flat gallery (keep for backward compat)
 export const galleryImages = [dish1, dish2, dish3, dish4, dish5, dish6, dish1, dish2, dish3];
+
+// Featured / most-ordered items for homepage & footer
+export const featuredMenuItems = menuItems.filter((item) =>
+  ["1", "6", "7", "4"].includes(item.id)
+);
+

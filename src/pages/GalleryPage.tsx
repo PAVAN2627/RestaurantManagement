@@ -3,13 +3,21 @@ import { galleryItems, galleryCategories } from "@/data/menuData";
 import { useState } from "react";
 
 const GalleryPage = () => {
-  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string>("All");
 
-  const scrollToSection = (cat: string) => {
-    setActiveSection(cat);
-    const el = document.getElementById(`gallery-${cat.replace(/\s+/g, "-")}`);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const allCategories = ["All", ...galleryCategories];
+
+  const filteredItems = activeFilter === "All"
+    ? galleryItems
+    : galleryItems.filter((g) => g.category === activeFilter);
+
+  // Group filtered items by category for section display
+  const sections = activeFilter === "All"
+    ? galleryCategories.map((cat) => ({
+        cat,
+        items: galleryItems.filter((g) => g.category === cat),
+      })).filter((s) => s.items.length > 0)
+    : [{ cat: activeFilter, items: filteredItems }];
 
   return (
   <main className="min-h-screen bg-background">
@@ -18,8 +26,6 @@ const GalleryPage = () => {
       <div className="absolute top-10 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-primary/15 rounded-full blur-3xl animate-float-delayed pointer-events-none" />
       <div className="absolute top-1/2 left-1/3 w-40 h-40 bg-primary/5 rounded-full blur-2xl animate-pulse-soft pointer-events-none" />
-      <div className="absolute top-20 right-[18%] w-16 h-16 border-2 border-primary/20 rounded-full animate-float-slow pointer-events-none" />
-      <div className="absolute bottom-28 left-[12%] w-10 h-10 border border-primary/15 rounded-full animate-pulse-soft pointer-events-none" />
       <div className="absolute inset-0 hero-pattern pointer-events-none" />
 
       <div className="container relative z-10 text-center max-w-3xl">
@@ -33,19 +39,23 @@ const GalleryPage = () => {
         <p className="font-body text-secondary-foreground/70 text-lg md:text-xl max-w-xl mx-auto mb-10 animate-fade-in-up stagger-1">
           Discover the artistry behind every dish we serve — each plate is a masterpiece.
         </p>
-        {/* Category pills */}
+
+        {/* Filter pills — All first, then categories */}
         <div className="flex flex-wrap justify-center gap-2 animate-fade-in-up stagger-2">
-          {galleryCategories.map((cat) => (
+          {allCategories.map((cat) => (
             <button
               key={cat}
-              onClick={() => scrollToSection(cat)}
+              onClick={() => setActiveFilter(cat)}
               className={`font-body text-sm font-medium px-5 py-2.5 rounded-full border transition-all hover-scale ${
-                activeSection === cat
+                activeFilter === cat
                   ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25"
                   : "border-secondary-foreground/20 text-secondary-foreground/70 hover:border-primary hover:text-primary backdrop-blur-sm"
               }`}
             >
               {cat}
+              {cat === "All" && (
+                <span className="ml-1.5 text-xs opacity-70">({galleryItems.length})</span>
+              )}
             </button>
           ))}
         </div>
@@ -58,57 +68,48 @@ const GalleryPage = () => {
       </div>
     </section>
 
-    {/* Gallery by Category */}
+    {/* Gallery Content */}
     <div className="container py-12 space-y-16">
-      {galleryCategories.map((cat) => {
-        const items = galleryItems.filter((g) => g.category === cat);
-        if (items.length === 0) return null;
-        return (
-          <section
-            key={cat}
-            id={`gallery-${cat.replace(/\s+/g, "-")}`}
-            className="scroll-mt-28"
-          >
-            <div className="flex items-center gap-4 mb-8 animate-fade-in-up">
-              <div className="p-3 rounded-xl bg-primary/10">
-                <Camera className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h2 className="font-display text-2xl md:text-3xl font-bold">{cat}</h2>
-                <p className="font-body text-sm text-muted-foreground">
-                  {items.length} {items.length === 1 ? "photo" : "photos"}
-                </p>
-              </div>
-              <div className="flex-1 h-px bg-border ml-4" />
+      {sections.map(({ cat, items }) => (
+        <section key={cat} id={`gallery-${cat.replace(/\s+/g, "-")}`} className="scroll-mt-28">
+          <div className="flex items-center gap-4 mb-8 animate-fade-in-up">
+            <div className="p-3 rounded-xl bg-primary/10">
+              <Camera className="w-5 h-5 text-primary" />
             </div>
+            <div>
+              <h2 className="font-display text-2xl md:text-3xl font-bold">{cat}</h2>
+              <p className="font-body text-sm text-muted-foreground">
+                {items.length} {items.length === 1 ? "photo" : "photos"}
+              </p>
+            </div>
+            <div className="flex-1 h-px bg-border ml-4" />
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {items.map((item, i) => (
-                <div
-                  key={`${cat}-${i}`}
-                  className={`group relative rounded-2xl overflow-hidden shadow-lg hover-lift animate-fade-in-up stagger-${Math.min(i % 4 + 1, 4)}`}
-                >
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      loading="lazy"
-                    />
-                  </div>
-                  {/* Overlay with dish name */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                    <div className="p-5 w-full">
-                      <p className="font-display text-lg font-bold text-white">{item.title}</p>
-                      <span className="font-body text-xs text-white/70">{item.category}</span>
-                    </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {items.map((item, i) => (
+              <div
+                key={`${cat}-${i}`}
+                className={`group relative rounded-2xl overflow-hidden shadow-lg hover-lift animate-fade-in-up stagger-${Math.min(i % 4 + 1, 4)}`}
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                  <div className="p-5 w-full">
+                    <p className="font-display text-lg font-bold text-white">{item.title}</p>
+                    <span className="font-body text-xs text-white/70">{item.category}</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
-        );
-      })}
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
   </main>
   );

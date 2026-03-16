@@ -1,6 +1,6 @@
-# Spice Garden - Restaurant Management System
+# Athenura Restaurant - Restaurant Management System
 
-A full-stack Restaurant Website built with React (frontend) and designed for the MERN stack. Spice Garden is an authentic Indian restaurant where customers can view the menu, add items to cart, place online orders, and reserve tables. Admins have a secure dashboard to manage menu items, orders, and reservations.
+A full-stack Restaurant Website built with React (frontend) and designed for the MERN stack. Athenura Restaurant is an authentic Indian restaurant where customers can view the menu, add items to cart, place online orders, and reserve tables. Admins have a secure dashboard to manage menu items, orders, and reservations.
 
 ## 📋 Table of Contents
 
@@ -660,3 +660,4 @@ Please use the GitHub issue tracker to report bugs.
 ---
 
 **Note**: This is currently a frontend-only implementation with mock data. Backend implementation is required for full functionality including authentication, database operations, payment processing, and email services.
+

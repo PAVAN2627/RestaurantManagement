@@ -229,15 +229,7 @@ const ReservationPage = () => {
           </div>
 
           <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-2">
-            <p className="font-body text-sm font-semibold">
-              Table Range for {guestsCount} {guestsCount === 1 ? "Guest" : "Guests"}: #{tableRange.start} - #{tableRange.end}
-            </p>
-
-            {!hasSlotSelection ? (
-              <p className="font-body text-xs text-muted-foreground">
-                Select date, start, and end time to see available table numbers.
-              </p>
-            ) : availableTables.length === 0 ? (
+            {!hasSlotSelection ? null : availableTables.length === 0 ? (
               <p className="font-body text-xs text-destructive font-medium">
                 No tables are available for this slot.
               </p>

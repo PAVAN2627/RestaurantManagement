@@ -5,7 +5,8 @@ import { menuItems } from "@/data/menuData";
 import MenuCard from "@/components/MenuCard";
 
 const Index = () => {
-  const featured = menuItems.slice(0, 4);
+  // Show all available menu items on homepage
+  const allAvailable = menuItems.filter((item) => item.isAvailable);
 
   return (
     <main>
@@ -133,23 +134,23 @@ const Index = () => {
         <div className="container">
           <div className="flex items-end justify-between mb-10 animate-fade-in-up">
             <div>
-              <p className="font-body text-primary font-semibold text-sm tracking-widest uppercase mb-2">Our Specials</p>
-              <h2 className="font-display text-3xl md:text-4xl font-bold">Featured Dishes</h2>
+              <p className="font-body text-primary font-semibold text-sm tracking-widest uppercase mb-2">Our Menu</p>
+              <h2 className="font-display text-3xl md:text-4xl font-bold">All Dishes</h2>
             </div>
             <Link to="/menu" className="hidden md:inline-flex items-center gap-1 font-body text-sm font-semibold text-primary hover:underline transition-all hover-scale">
-              View All <ArrowRight className="w-4 h-4" />
+              Browse & Filter <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featured.map((item, i) => (
-              <div key={item.id} className={`animate-fade-in-up stagger-${i + 1}`}>
+            {allAvailable.map((item, i) => (
+              <div key={item.id} className={`animate-fade-in-up stagger-${Math.min(i % 4 + 1, 4)}`}>
                 <MenuCard item={item} />
               </div>
             ))}
           </div>
           <div className="mt-8 text-center md:hidden animate-fade-in">
             <Link to="/menu" className="inline-flex items-center gap-1 font-body text-sm font-semibold text-primary hover-scale">
-              View Full Menu <ArrowRight className="w-4 h-4" />
+              Browse & Filter <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>

@@ -26,7 +26,7 @@ const FilterSection = ({ title, isOpen, onToggle, children }: { title: string; i
 };
 
 const MenuPage = () => {
-  const [activeCategory, setActiveCategory] = useState("");
+  const [activeCategories, setActiveCategories] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("default");
   const [diet, setDiet] = useState<DietFilter>("all");
@@ -35,9 +35,15 @@ const MenuPage = () => {
 
   const toggleSection = (name: string) => setOpenSection((prev) => (prev === name ? null : name));
 
+  const toggleCategory = (cat: string) => {
+    setActiveCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
+  };
+
   const filtered = useMemo(() => {
     let result = menuItems.filter((item) => {
-      const matchCat = activeCategory === "" || item.category === activeCategory;
+      const matchCat = activeCategories.length === 0 || activeCategories.includes(item.category);
       const matchSearch = item.name.toLowerCase().includes(search.toLowerCase()) || item.description.toLowerCase().includes(search.toLowerCase());
       const matchDiet = diet === "all" || (diet === "veg" ? item.isVeg : !item.isVeg);
       return matchCat && matchSearch && matchDiet && item.isAvailable;
@@ -45,40 +51,43 @@ const MenuPage = () => {
     if (sort === "price-low") result = [...result].sort((a, b) => a.price - b.price);
     else if (sort === "price-high") result = [...result].sort((a, b) => b.price - a.price);
     return result;
-  }, [activeCategory, search, sort, diet]);
+  }, [activeCategories, search, sort, diet]);
 
   const activeFilters = [
-    ...(activeCategory !== "" ? [{ label: activeCategory, clear: () => setActiveCategory("") }] : []),
+    ...activeCategories.map((cat) => ({ label: cat, clear: () => toggleCategory(cat) })),
     ...(diet !== "all" ? [{ label: diet === "veg" ? "Veg Only" : "Non-Veg Only", clear: () => setDiet("all") }] : []),
     ...(sort !== "default" ? [{ label: sort === "price-low" ? "Price: Low → High" : "Price: High → Low", clear: () => setSort("default") }] : []),
   ];
 
-  const clearAll = () => { setActiveCategory(""); setDiet("all"); setSort("default"); };
+  const clearAll = () => { setActiveCategories([]); setDiet("all"); setSort("default"); };
 
   const FilterContent = ({ onSelect }: { onSelect?: () => void }) => (
     <>
       <FilterSection title="CATEGORIES" isOpen={openSection === "categories"} onToggle={() => toggleSection("categories")}>
         <div className="flex flex-col">
-          {filterCategories.map((cat) => (
-            <label
-              key={cat}
-              className="flex items-center gap-3 px-1 py-1.5 cursor-pointer group"
-              onClick={() => { setActiveCategory(activeCategory === cat ? "" : cat); onSelect?.(); }}
-            >
-              <span className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
-                activeCategory === cat ? "bg-primary border-primary" : "border-muted-foreground/40 group-hover:border-primary"
-              }`}>
-                {activeCategory === cat && (
-                  <svg className="w-2.5 h-2.5 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </span>
-              <span className={`font-body text-[13px] ${activeCategory === cat ? "font-semibold text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>
-                {cat}
-              </span>
-            </label>
-          ))}
+          {filterCategories.map((cat) => {
+            const isChecked = activeCategories.includes(cat);
+            return (
+              <label
+                key={cat}
+                className="flex items-center gap-3 px-1 py-1.5 cursor-pointer group"
+                onClick={() => { toggleCategory(cat); onSelect?.(); }}
+              >
+                <span className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
+                  isChecked ? "bg-primary border-primary" : "border-muted-foreground/40 group-hover:border-primary"
+                }`}>
+                  {isChecked && (
+                    <svg className="w-2.5 h-2.5 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </span>
+                <span className={`font-body text-[13px] ${isChecked ? "font-semibold text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>
+                  {cat}
+                </span>
+              </label>
+            );
+          })}
         </div>
       </FilterSection>
 

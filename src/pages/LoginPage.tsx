@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogIn, Shield } from "lucide-react";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
@@ -87,6 +87,10 @@ const LoginPage = () => {
 
         <p className="text-center text-xs text-muted-foreground font-body mt-6">
           By signing in, you agree to our <a href="/terms" className="text-primary hover:underline">Terms</a> and <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>
+        </p>
+        <p className="text-center font-body text-sm text-muted-foreground mt-3">
+          Don't have an account?{" "}
+          <Link to="/signup" state={location.state} className="text-primary hover:underline font-semibold">Sign up</Link>
         </p>
       </div>
     </main>

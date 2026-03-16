@@ -97,7 +97,7 @@ const CheckoutPage = () => {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_YOUR_KEY_ID", // Replace with your Razorpay key
       amount: orderData.amount,
       currency: orderData.currency,
-      name: "Spice Garden",
+      name: "Athenura Restaurant",
       description: "Order Payment",
       order_id: orderData.id,
       handler: function (response: any) {
@@ -697,3 +697,4 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
+

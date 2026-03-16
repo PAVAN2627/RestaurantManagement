@@ -23,6 +23,7 @@ interface AuthContextType {
   login: () => void;
   logout: () => void;
   loginAsAdmin: () => void;
+  signup: (data: { name: string; email: string; phone: string; address?: string; avatar?: string }) => void;
   updateUser: (updates: Partial<MockUser>) => void;
   addAddress: (address: Omit<Address, "id">) => void;
   updateAddress: (id: string, updates: Partial<Address>) => void;
@@ -56,7 +57,7 @@ const mockUser: MockUser = {
 const mockAdmin: MockUser = {
   id: "a1",
   name: "Admin Chef",
-  email: "admin@spicegarden.in",
+  email: "admin@athenura.in",
   avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=ffd5dc&radius=50",
   role: "admin",
   phone: "+91 99999 00000",
@@ -71,6 +72,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const stored = localStorage.getItem("auth_user");
     return stored ? JSON.parse(stored) : null;
   });
+
+  const signup = useCallback((data: { name: string; email: string; phone: string; address?: string; avatar?: string }) => {
+    const newUser: MockUser = {
+      id: `u${Date.now()}`,
+      name: data.name,
+      email: data.email,
+      avatar: data.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(data.name)}&backgroundColor=b6e3f4&radius=50`,
+      role: "user",
+      phone: data.phone,
+      addresses: data.address
+        ? [{ id: "addr1", label: "Home", fullAddress: data.address, isPrimary: true }]
+        : [],
+    };
+    setUser(newUser);
+    localStorage.setItem("auth_user", JSON.stringify(newUser));
+  }, []);
 
   const login = useCallback(() => {
     setUser(mockUser);
@@ -177,6 +194,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         logout,
         loginAsAdmin,
+        signup,
         updateUser,
         addAddress,
         updateAddress,
@@ -194,3 +212,4 @@ export const useAuth = () => {
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
 };
+

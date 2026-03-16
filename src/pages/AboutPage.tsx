@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { UtensilsCrossed, Heart, Award, Users, Sparkles, Leaf, ArrowRight } from "lucide-react";
 import { useCountUp } from "@/hooks/useCountUp";
 
@@ -105,10 +105,10 @@ const AboutPage = () => {
             <span className="font-body text-primary font-semibold text-xs tracking-widest uppercase">Our Story</span>
           </div>
           <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-secondary-foreground mb-6 animate-fade-in-up">
-            About <span className="gradient-text">Spice Garden</span>
+            About <span className="gradient-text">Athenura Restaurant</span>
           </h1>
           <p className="font-body text-secondary-foreground/70 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto animate-fade-in-up stagger-1">
-            Founded in 2020, Spice Garden is a celebration of culinary art — blending time-honored Indian traditions with modern innovation. Every dish is crafted from locally sourced, seasonal ingredients by our team of passionate chefs.
+            Founded in 2020, Athenura Restaurant is a celebration of culinary art — blending time-honored Indian traditions with modern innovation. Every dish is crafted from locally sourced, seasonal ingredients by our team of passionate chefs.
           </p>
 
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto animate-fade-in-up stagger-2">
@@ -149,7 +149,7 @@ const AboutPage = () => {
               </div>
               <div className="space-y-4 font-body text-muted-foreground leading-relaxed">
                 <p>
-                  Spice Garden was born from a simple dream: to bring authentic Indian flavors to food lovers while honoring the rich culinary heritage of India. What started as a small family kitchen in Mumbai has grown into a beloved restaurant.
+                  Athenura Restaurant was born from a simple dream: to bring authentic Indian flavors to food lovers while honoring the rich culinary heritage of India. What started as a small family kitchen in Mumbai has grown into a beloved restaurant.
                 </p>
                 <p>
                   Our name reflects our philosophy. Just as a garden nurtures diverse plants, we celebrate the incredible variety of Indian cuisine — from fiery curries to aromatic biryanis, from tandoori delights to coastal seafood specialties.
@@ -247,7 +247,7 @@ const AboutPage = () => {
         {/* CTA */}
         <div className="mt-16 bg-card border border-border rounded-3xl p-8 md:p-10 text-center animate-fade-in-up relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-3 relative">Experience Spice Garden</h2>
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-3 relative">Experience Athenura Restaurant</h2>
           <p className="font-body text-muted-foreground max-w-2xl mx-auto mb-8 relative">
             Ready for bold spices, comforting classics, and memorable hospitality? Explore our menu or reserve your table in seconds.
           </p>
@@ -273,3 +273,5 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
+
+

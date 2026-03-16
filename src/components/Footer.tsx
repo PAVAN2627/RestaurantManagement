@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Flame } from "lucide-react";
+import { featuredMenuItems } from "@/data/menuData";
 
 const Footer = () => {
   const location = useLocation();
@@ -11,13 +12,42 @@ const Footer = () => {
 
   return (
     <footer className="bg-secondary text-secondary-foreground pt-16 pb-8">
-      <div className="container grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-        <div>
+      <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+        <div className="lg:col-span-1">
           <img src="/athenurawhitelogo.png" alt="Athenura" className="h-16 md:h-20 w-auto object-contain mb-4" />
           <p className="font-body text-sm text-secondary-foreground/70 leading-relaxed">
             A culinary experience that blends tradition with innovation. Every dish tells a story of passion and flavor.
           </p>
         </div>
+
+        {/* Trending / Featured Menu */}
+        <div className="lg:col-span-1">
+          <h4 className="font-display text-lg font-semibold mb-4 flex items-center gap-2">
+            <Flame className="w-4 h-4 text-primary" /> Trending Dishes
+          </h4>
+          <div className="flex flex-col gap-3">
+            {featuredMenuItems.map((item) => (
+              <Link
+                key={item.id}
+                to={`/menu/${item.id}`}
+                className="flex items-center gap-3 group"
+              >
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-10 h-10 rounded-lg object-cover shrink-0 group-hover:scale-105 transition-transform"
+                />
+                <div>
+                  <p className="font-body text-sm text-secondary-foreground/90 group-hover:text-primary transition-colors leading-tight">
+                    {item.name}
+                  </p>
+                  <p className="font-body text-xs text-secondary-foreground/50">₹{item.price}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
         <div>
           <h4 className="font-display text-lg font-semibold mb-4">Quick Links</h4>
           <nav className="flex flex-col gap-2 font-body text-sm text-secondary-foreground/70">
@@ -40,7 +70,7 @@ const Footer = () => {
           <div className="flex flex-col gap-3 font-body text-sm text-secondary-foreground/70">
             <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-primary" /> 123 Flavor Street, Mumbai</div>
             <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary" /> +91 98765 43210</div>
-            <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary" /> hello@spicegarden.in</div>
+            <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary" /> hello@athenura.in</div>
             <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-primary" /> 11 AM – 11 PM, Daily</div>
           </div>
         </div>
@@ -55,3 +85,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

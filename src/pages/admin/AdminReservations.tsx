@@ -11,6 +11,13 @@ const statusColor: Record<string, string> = {
   completed: "bg-green-200 text-green-800",
 };
 
+const to12hr = (time24: string) => {
+  const [h, m] = time24.split(":").map(Number);
+  const period = h >= 12 ? "PM" : "AM";
+  const hour = h % 12 === 0 ? 12 : h % 12;
+  return `${hour}:${String(m).padStart(2, "0")} ${period}`;
+};
+
 const guestBuckets = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12];
 const timeSlots = Array.from({ length: 12 }, (_, i) => `${String(i + 8).padStart(2, "0")}:00`);
 
@@ -66,7 +73,7 @@ const AdminReservations = () => {
         `Your reservation is confirmed.\n` +
         `Booking ID: ${reservation.id}\n` +
         `Date: ${reservation.date}\n` +
-        `Time: ${startTime} - ${endTime}\n` +
+        `Time: ${to12hr(startTime)} - ${to12hr(endTime)}\n` +
         `Guests: ${reservation.guests}\n` +
         `Table: ${tableText}\n\n` +
         `Thank you for choosing Athenura. We look forward to hosting you.\n`
@@ -191,7 +198,7 @@ const AdminReservations = () => {
                   <td className="font-body text-xs p-3 text-muted-foreground">{r.phone}</td>
                   <td className="font-body text-sm p-3 text-center">{r.guests}</td>
                   <td className="font-body text-sm p-3">{r.date}</td>
-                  <td className="font-body text-sm p-3">{(r.startTime || r.time)} - {(r.endTime || addMinutesToTime(r.startTime || r.time, 60))}</td>
+                  <td className="font-body text-sm p-3">{to12hr(r.startTime || r.time)} - {to12hr(r.endTime || addMinutesToTime(r.startTime || r.time, 60))}</td>
                   <td className="font-body text-xs p-3 text-muted-foreground max-w-[150px] truncate">{r.notes || "-"}</td>
                   <td className="p-3"><span className={`font-body text-xs px-2.5 py-1 rounded-full capitalize ${statusColor[r.status]}`}>{r.status}</span></td>
                   <td className="p-3">
@@ -289,7 +296,7 @@ const AdminReservations = () => {
                           : "border-border bg-background hover:border-primary/40 hover:bg-primary/5"
                       }`}
                     >
-                      <p className="font-body text-sm font-semibold">{slotInfo.slot}</p>
+                      <p className="font-body text-sm font-semibold">{to12hr(slotInfo.slot)}</p>
                       <p className="font-body text-xs text-muted-foreground mt-1">Reservations: {slotInfo.bookings}</p>
                       <div className="flex gap-2 mt-2">
                         <span className="font-body text-[11px] px-2 py-0.5 rounded-full bg-destructive/10 text-destructive">
@@ -306,7 +313,7 @@ const AdminReservations = () => {
 
               <div className="mb-3 flex flex-wrap gap-2">
                 <span className="font-body text-xs px-3 py-1 rounded-full bg-orange-100 text-orange-800 border border-orange-200">
-                  Selected Slot: {selectedTimeSlot}
+                  Selected Slot: {to12hr(selectedTimeSlot)}
                 </span>
                 <span className="font-body text-xs px-3 py-1 rounded-full bg-primary/15 text-primary border border-primary/25">
                   Available Tables: {availableTables.length}
@@ -354,7 +361,7 @@ const AdminReservations = () => {
                         Table #{selectedTableNumber} is booked by {selectedTableReservation.name}
                       </p>
                       <p className="font-body text-xs text-muted-foreground">
-                        Time: {(selectedTableReservation.startTime || selectedTableReservation.time)} - {(selectedTableReservation.endTime || addMinutesToTime(selectedTableReservation.startTime || selectedTableReservation.time, 60))}
+                        Time: {to12hr(selectedTableReservation.startTime || selectedTableReservation.time)} - {to12hr(selectedTableReservation.endTime || addMinutesToTime(selectedTableReservation.startTime || selectedTableReservation.time, 60))}
                       </p>
                       <p className="font-body text-xs text-muted-foreground">Phone: {selectedTableReservation.phone}</p>
                       <p className="font-body text-xs text-muted-foreground">Guests: {selectedTableReservation.guests}</p>
